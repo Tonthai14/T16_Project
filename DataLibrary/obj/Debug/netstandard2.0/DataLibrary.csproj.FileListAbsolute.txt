@@ -1,0 +1,9 @@
+C:\Users\Tonth\source\repos\Team16Project\DataLibrary\bin\Debug\netstandard2.0\DataLibrary.deps.json
+C:\Users\Tonth\source\repos\Team16Project\DataLibrary\bin\Debug\netstandard2.0\DataLibrary.dll
+C:\Users\Tonth\source\repos\Team16Project\DataLibrary\bin\Debug\netstandard2.0\DataLibrary.pdb
+C:\Users\Tonth\source\repos\Team16Project\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.csprojAssemblyReference.cache
+C:\Users\Tonth\source\repos\Team16Project\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.AssemblyInfoInputs.cache
+C:\Users\Tonth\source\repos\Team16Project\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.AssemblyInfo.cs
+C:\Users\Tonth\source\repos\Team16Project\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Tonth\source\repos\Team16Project\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.dll
+C:\Users\Tonth\source\repos\Team16Project\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.pdb

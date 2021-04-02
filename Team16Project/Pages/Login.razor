@@ -1,0 +1,18 @@
+﻿@page "/auth/login"
+
+@layout LoginLayout
+@using Team16Project.Models
+@inject AuthenticationStateProvider auth
+@inject NavigationManager nav 
+
+
+<h3>Login</h3>
+
+@code {
+
+    LoginRequest model = new LoginRequest();
+
+    bool isBusy = false;
+    string message = string.Empty;
+
+}

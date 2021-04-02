@@ -1,0 +1,51 @@
+﻿@page "/staff"
+
+@using DataLibrary
+@using Team16Project.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAccess _data
+@inject IConfiguration _config
+
+<h3>Staff</h3>
+
+
+@if (staff == null)
+{
+    <p><em>Loading staff...</em></p>
+}
+else
+{
+    foreach (var s in staff)
+    {
+        <p>
+            @s.FirstName @s.LastName
+        </p>
+    }
+}
+
+@code {
+    List<StaffModel> staff;
+
+@*    private async Task InsertData()
+    {
+        string query = "insert into staff (FirstName, LastName) values (@FirstName, @LastName);";
+
+        await _data.SaveData(query, new { FirstName = "Billy", LastName = "Bob" }, _config.GetConnectionString("default"));
+    }*@
+
+@*    private async Task UpdateData()
+    {
+        string query = "update staff set FirstName = @FirstName where LastName = @LastName";
+
+        await _data.SaveData(query, new { FirstName = "Timothy", LastName = "Corey" }, _config.GetConnectionString("default"));
+
+        await OnInitializedAsync();
+    }*@
+
+    protected override async Task OnInitializedAsync()
+    {
+        string query = "select * from staff";
+
+        staff = await _data.LoadData<StaffModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+    }
+}
