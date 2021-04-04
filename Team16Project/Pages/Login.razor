@@ -1,18 +1,63 @@
 ﻿@page "/auth/login"
 
 @layout LoginLayout
-@using Team16Project.Models
+@using DataLibrary
+@using Team16Project.Data
+@using Microsoft.Extensions.Configuration
+@inject IDataAccess _data
+@inject IConfiguration _config
 @inject AuthenticationStateProvider auth
-@inject NavigationManager nav 
+@inject NavigationManager nav
 
 
-<h3>Login</h3>
+
+<EditForm Model="@employee" OnValidSubmit="@ValidateLogin">
+    <div>
+        <br /><br /><br /><br /><br />
+    </div>
+    <div>
+        <h3 style="font-weight:bold; color:black">Login with your credentials</h3>
+    </div>
+    <div>
+        <br />
+    </div>
+    <div class="col-6 row">
+        <input class="form-control col-6" @bind="employee.Id" placeholder="Employee ID" />
+    </div>
+    <br />
+    <div class="col-6 row">
+        <input type="password" class="form-control col-6" @bind="employee.Password" placeholder="Password" />
+    </div>
+    <br />
+    <div class="col-12 row">
+        <span class="col-12"></span>
+        <input type="submit" class="form-control col-6 btn btn-primary" value="Login" />
+    </div>
+    <br />
+    <div class="col-12 row" style="text-align:left; font-weight:bold">
+        <span class="col-12">@LoginMessage</span>
+    </div>
+</EditForm>
+
 
 @code {
-
-    LoginRequest model = new LoginRequest();
+    private Employee employee;
+    public string LoginMessage { get; set; }
 
     bool isBusy = false;
     string message = string.Empty;
 
+    protected async override Task OnInitializedAsync()
+    {
+        employee = new Employee();
+
+    }
+
+    private async Task<bool> ValidateLogin()
+    {
+        string query = "SELECT staff_id, password FROM STAFF WHERE staff_id = @employee.Id AND password = @employee.password";
+
+        
+        return await Task.FromResult(true);
+    }
 }

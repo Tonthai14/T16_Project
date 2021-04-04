@@ -13,84 +13,91 @@ namespace Team16Project.Pages
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
 #nullable restore
-#line 1 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\_Imports.razor"
+#line 1 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\_Imports.razor"
 using System.Net.Http;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\_Imports.razor"
+#line 2 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\_Imports.razor"
 using Microsoft.AspNetCore.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\_Imports.razor"
+#line 3 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\_Imports.razor"
 using Microsoft.AspNetCore.Components.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\_Imports.razor"
+#line 4 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\_Imports.razor"
 using Microsoft.AspNetCore.Components.Forms;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\_Imports.razor"
+#line 5 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\_Imports.razor"
 using Microsoft.AspNetCore.Components.Routing;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 6 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\_Imports.razor"
+#line 6 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 7 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\_Imports.razor"
+#line 7 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\_Imports.razor"
 using Microsoft.JSInterop;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 8 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\_Imports.razor"
+#line 8 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\_Imports.razor"
 using Team16Project;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 9 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\_Imports.razor"
+#line 9 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\_Imports.razor"
 using Team16Project.Shared;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\Pages\Staff.razor"
+#line 3 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
 using DataLibrary;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\Pages\Staff.razor"
+#line 4 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
+using DataLibrary.Models;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 5 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
 using Team16Project.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\Pages\Staff.razor"
+#line 6 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
 using Microsoft.Extensions.Configuration;
 
 #line default
@@ -105,21 +112,30 @@ using Microsoft.Extensions.Configuration;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 26 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\Pages\Staff.razor"
+#line 53 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
        
     List<StaffModel> staff;
+    private DisplayStaffModel newStaff = new DisplayStaffModel();
 
+    private async Task InsertData()
+    {
+        string query = "insert into staff (FirstName, LastName, Job) values (@FirstName, @LastName, @Job);";
 
-#line default
-#line hidden
-#nullable disable
-#nullable restore
-#line 43 "C:\Users\Tonth\source\repos\Team16Project\Team16Project\Pages\Staff.razor"
-       
+        await _data.SaveData(query, new { FirstName = "@FirstName", LastName = "@LastName" }, _config.GetConnectionString("default"));
+    }
+
+    private async Task UpdateData()
+    {
+        string query = "update staff set FirstName = @FirstName where LastName = @LastName";
+
+        await _data.SaveData(query, new { FirstName = "@FirstName", LastName = "@LastName" }, _config.GetConnectionString("default"));
+
+        await OnInitializedAsync();
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        string query = "select * from staff";
+        string query = "SELECT * FROM STAFF";
 
         staff = await _data.LoadData<StaffModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
     }

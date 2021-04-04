@@ -1,50 +1,78 @@
 ﻿@page "/staff"
 
 @using DataLibrary
+@using DataLibrary.Models
 @using Team16Project.Models
 @using Microsoft.Extensions.Configuration
 @inject IDataAccess _data
 @inject IConfiguration _config
 
-<h3>Staff</h3>
-
+<h4>Staff Information</h4>
 
 @if (staff == null)
 {
-    <p><em>Loading staff...</em></p>
+    <p><em>Loading staff information...</em></p>
 }
 else
 {
-    foreach (var s in staff)
-    {
-        <p>
-            @s.FirstName @s.LastName
-        </p>
-    }
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Job</th>
+                <th>Employee ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in staff)
+            {
+                <tr>
+                    <td>@employee.FirstName</td>
+                    <td>@employee.LastName</td>
+                    <td>@employee.Job</td>
+                    <td>@employee.Id</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
+
+<h3>Add a new employee</h3>
+<EditForm Model="@newStaff" OnValidSubmit="@InsertData">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="FirstName" @bind-Value="newStaff.FirstName" />
+    <InputText id="LastName" @bind-Value="newStaff.LastName" />
+    <InputText id="Job" @bind-Value="newStaff.Job" />
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
 
 @code {
     List<StaffModel> staff;
+    private DisplayStaffModel newStaff = new DisplayStaffModel();
 
-@*    private async Task InsertData()
+    private async Task InsertData()
     {
-        string query = "insert into staff (FirstName, LastName) values (@FirstName, @LastName);";
+        string query = "insert into staff (FirstName, LastName, Job) values (@FirstName, @LastName, @Job);";
 
-        await _data.SaveData(query, new { FirstName = "Billy", LastName = "Bob" }, _config.GetConnectionString("default"));
-    }*@
+        await _data.SaveData(query, new { FirstName = "@FirstName", LastName = "@LastName" }, _config.GetConnectionString("default"));
+    }
 
-@*    private async Task UpdateData()
+    private async Task UpdateData()
     {
         string query = "update staff set FirstName = @FirstName where LastName = @LastName";
 
-        await _data.SaveData(query, new { FirstName = "Timothy", LastName = "Corey" }, _config.GetConnectionString("default"));
+        await _data.SaveData(query, new { FirstName = "@FirstName", LastName = "@LastName" }, _config.GetConnectionString("default"));
 
         await OnInitializedAsync();
-    }*@
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        string query = "select * from staff";
+        string query = "SELECT * FROM STAFF";
 
         staff = await _data.LoadData<StaffModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
     }

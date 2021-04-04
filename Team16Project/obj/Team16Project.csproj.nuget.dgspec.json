@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Tonth\\source\\repos\\Team16Project\\Team16Project\\Team16Project.csproj": {}
+    "C:\\Users\\Tonth\\source\\repos\\T16_Project\\Team16Project\\Team16Project.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Tonth\\source\\repos\\Team16Project\\DataLibrary\\DataLibrary.csproj": {
+    "C:\\Users\\Tonth\\source\\repos\\T16_Project\\DataLibrary\\DataLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Tonth\\source\\repos\\Team16Project\\DataLibrary\\DataLibrary.csproj",
+        "projectUniqueName": "C:\\Users\\Tonth\\source\\repos\\T16_Project\\DataLibrary\\DataLibrary.csproj",
         "projectName": "DataLibrary",
-        "projectPath": "C:\\Users\\Tonth\\source\\repos\\Team16Project\\DataLibrary\\DataLibrary.csproj",
+        "projectPath": "C:\\Users\\Tonth\\source\\repos\\T16_Project\\DataLibrary\\DataLibrary.csproj",
         "packagesPath": "C:\\Users\\Tonth\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Tonth\\source\\repos\\Team16Project\\DataLibrary\\obj\\",
+        "outputPath": "C:\\Users\\Tonth\\source\\repos\\T16_Project\\DataLibrary\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Tonth\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -69,14 +69,14 @@
         }
       }
     },
-    "C:\\Users\\Tonth\\source\\repos\\Team16Project\\Team16Project\\Team16Project.csproj": {
+    "C:\\Users\\Tonth\\source\\repos\\T16_Project\\Team16Project\\Team16Project.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Tonth\\source\\repos\\Team16Project\\Team16Project\\Team16Project.csproj",
+        "projectUniqueName": "C:\\Users\\Tonth\\source\\repos\\T16_Project\\Team16Project\\Team16Project.csproj",
         "projectName": "Team16Project",
-        "projectPath": "C:\\Users\\Tonth\\source\\repos\\Team16Project\\Team16Project\\Team16Project.csproj",
+        "projectPath": "C:\\Users\\Tonth\\source\\repos\\T16_Project\\Team16Project\\Team16Project.csproj",
         "packagesPath": "C:\\Users\\Tonth\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Tonth\\source\\repos\\Team16Project\\Team16Project\\obj\\",
+        "outputPath": "C:\\Users\\Tonth\\source\\repos\\T16_Project\\Team16Project\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Tonth\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -93,8 +93,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Users\\Tonth\\source\\repos\\Team16Project\\DataLibrary\\DataLibrary.csproj": {
-                "projectPath": "C:\\Users\\Tonth\\source\\repos\\Team16Project\\DataLibrary\\DataLibrary.csproj"
+              "C:\\Users\\Tonth\\source\\repos\\T16_Project\\DataLibrary\\DataLibrary.csproj": {
+                "projectPath": "C:\\Users\\Tonth\\source\\repos\\T16_Project\\DataLibrary\\DataLibrary.csproj"
               }
             }
           }
