@@ -16,3 +16,12 @@ C:\Users\Tonth\source\repos\T16_Project\DataLibrary\obj\Debug\netstandard2.0\Dat
 C:\Users\Tonth\source\repos\T16_Project\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.csproj.CoreCompileInputs.cache
 C:\Users\Tonth\source\repos\T16_Project\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.dll
 C:\Users\Tonth\source\repos\T16_Project\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.pdb
+C:\Users\jonat\OneDrive\Desktop\T16R\DataLibrary\bin\Debug\netstandard2.0\DataLibrary.deps.json
+C:\Users\jonat\OneDrive\Desktop\T16R\DataLibrary\bin\Debug\netstandard2.0\DataLibrary.dll
+C:\Users\jonat\OneDrive\Desktop\T16R\DataLibrary\bin\Debug\netstandard2.0\DataLibrary.pdb
+C:\Users\jonat\OneDrive\Desktop\T16R\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.csprojAssemblyReference.cache
+C:\Users\jonat\OneDrive\Desktop\T16R\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.AssemblyInfoInputs.cache
+C:\Users\jonat\OneDrive\Desktop\T16R\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.AssemblyInfo.cs
+C:\Users\jonat\OneDrive\Desktop\T16R\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.csproj.CoreCompileInputs.cache
+C:\Users\jonat\OneDrive\Desktop\T16R\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.dll
+C:\Users\jonat\OneDrive\Desktop\T16R\DataLibrary\obj\Debug\netstandard2.0\DataLibrary.pdb

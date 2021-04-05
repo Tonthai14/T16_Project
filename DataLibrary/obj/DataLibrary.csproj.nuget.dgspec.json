@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Tonth\\source\\repos\\T16_Project\\DataLibrary\\DataLibrary.csproj": {}
+    "C:\\Users\\jonat\\OneDrive\\Desktop\\T16R\\DataLibrary\\DataLibrary.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Tonth\\source\\repos\\T16_Project\\DataLibrary\\DataLibrary.csproj": {
+    "C:\\Users\\jonat\\OneDrive\\Desktop\\T16R\\DataLibrary\\DataLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Tonth\\source\\repos\\T16_Project\\DataLibrary\\DataLibrary.csproj",
+        "projectUniqueName": "C:\\Users\\jonat\\OneDrive\\Desktop\\T16R\\DataLibrary\\DataLibrary.csproj",
         "projectName": "DataLibrary",
-        "projectPath": "C:\\Users\\Tonth\\source\\repos\\T16_Project\\DataLibrary\\DataLibrary.csproj",
-        "packagesPath": "C:\\Users\\Tonth\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Tonth\\source\\repos\\T16_Project\\DataLibrary\\obj\\",
+        "projectPath": "C:\\Users\\jonat\\OneDrive\\Desktop\\T16R\\DataLibrary\\DataLibrary.csproj",
+        "packagesPath": "C:\\Users\\jonat\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\jonat\\OneDrive\\Desktop\\T16R\\DataLibrary\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Tonth\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jonat\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -65,7 +65,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

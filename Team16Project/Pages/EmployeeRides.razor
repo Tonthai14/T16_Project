@@ -1,0 +1,71 @@
+﻿@page "/employeerides"
+@using DataLibrary
+@using DataLibrary.Models
+@using Team16Project.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAccess _data
+@inject IConfiguration _config
+<h4>Ride Information</h4>
+
+@if (rides == null)
+{
+    <p><em>Loading ride information...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Times Ridden</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ride in rides)
+            {
+                <tr>
+                    <td>@ride.ride_name</td>
+                    <td>@ride.times_ridden</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h3>Add info on ride</h3>
+<EditForm Model="@thisRide" OnValidSubmit="@InsertData">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="RideName" @bind-Value="thisRide.RideName" />
+    <InputText id="TimesRidden" @bind-Value="thisRide.TimesRidden" />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@code {
+    List<EmployeeRidesModel> rides;
+    private DisplayEmployeeRidesModel thisRide = new DisplayEmployeeRidesModel();
+
+    private async Task InsertData()
+    {
+        string query = "INSERT INTO ride(ride_name, times_ridden) values ('@RideName', '@TimesRidden');";
+
+        await _data.SaveData(query, new { RideName = "@RideName", TimesRidden = "@TimesRidden" }, _config.GetConnectionString("default"));
+    }
+
+    private async Task UpdateData()
+    {
+        string query = "update ride set TimesRidden = @TimesRidden where RideName = @RideName";
+
+        await _data.SaveData(query, new { TimesRidden = "@TimesRidden", RideName = "@RideName" }, _config.GetConnectionString("default"));
+
+        await OnInitializedAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string query = "SELECT * FROM RIDE";
+
+        rides = await _data.LoadData<EmployeeRidesModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+    }
+}
