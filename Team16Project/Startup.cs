@@ -31,6 +31,7 @@ namespace Team16Project
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<IDataAccess, DataAccess>();
+            services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

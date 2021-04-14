@@ -112,25 +112,56 @@ using Microsoft.Extensions.Configuration;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 53 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
+#line 87 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
        
     List<StaffModel> staff;
     private DisplayStaffModel newStaff = new DisplayStaffModel();
 
-    private async Task InsertData()
+    private void EnableEdit(bool flag, StaffModel staff)
     {
-        string query = "insert into staff (FirstName, LastName, Job) values (@FirstName, @LastName, @Job);";
-
-        await _data.SaveData(query, new { FirstName = "@FirstName", LastName = "@LastName" }, _config.GetConnectionString("default"));
+        staff.IsBeingEdited = flag;
     }
 
-    private async Task UpdateData()
+    private async Task InsertStaff()
     {
-        string query = "update staff set FirstName = @FirstName where LastName = @LastName";
+        string query = "INSERT INTO STAFF (FirstName, LastName, Job, PARK_ParkId) VALUES (@FirstName, @LastName, @Job, 0);";
 
-        await _data.SaveData(query, new { FirstName = "@FirstName", LastName = "@LastName" }, _config.GetConnectionString("default"));
+        await _data.SaveData(query,
+            new { FirstName = newStaff.FirstName, LastName = newStaff.LastName, Job = newStaff.Job },
+            _config.GetConnectionString("default"));
+        // Get StaffId of most recent database entry in STAFF table
+        string getId = "SELECT StaffId FROM STAFF ORDER BY CreateDate DESC LIMIT 1;";
+        List<int> id = await _data.LoadData<int, dynamic>(getId,
+            new { FirstName = newStaff.FirstName, LastName = newStaff.LastName, Job = newStaff.Job },
+            _config.GetConnectionString("default"));
+        StaffModel employee = new StaffModel
+        {
+            FirstName = newStaff.FirstName,
+            LastName = newStaff.LastName,
+            Job = newStaff.Job,
+            StaffId = id.ElementAt(0) // List should only contain single employee ID
+        };
+        staff.Add(employee);
+        // Reset so new employee variable has clean slate of information
+        newStaff = new DisplayStaffModel();
+    }
+
+    private async Task UpdateStaff(StaffModel staff)
+    {
+        EnableEdit(false, staff);
+        string query = "UPDATE STAFF SET FirstName = @FirstName, LastName = @LastName, Job = @Job WHERE StaffId = @StaffId";
+
+        await _data.SaveData(query,
+            new { FirstName = staff.FirstName, LastName = staff.LastName, Job = staff.Job, StaffId = staff.StaffId },
+            _config.GetConnectionString("default"));
 
         await OnInitializedAsync();
+    }
+
+    private async Task DeleteStaff()
+    {
+        string query = "DELETE FROM STAFF WHERE StaffId = @StaffId";
+
     }
 
     protected override async Task OnInitializedAsync()

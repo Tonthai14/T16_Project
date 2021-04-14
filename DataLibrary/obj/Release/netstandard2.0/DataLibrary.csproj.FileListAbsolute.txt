@@ -1,0 +1,9 @@
+C:\Users\Tonth\source\repos\T16_Project\DataLibrary\bin\Release\netstandard2.0\DataLibrary.deps.json
+C:\Users\Tonth\source\repos\T16_Project\DataLibrary\bin\Release\netstandard2.0\DataLibrary.dll
+C:\Users\Tonth\source\repos\T16_Project\DataLibrary\bin\Release\netstandard2.0\DataLibrary.pdb
+C:\Users\Tonth\source\repos\T16_Project\DataLibrary\obj\Release\netstandard2.0\DataLibrary.csprojAssemblyReference.cache
+C:\Users\Tonth\source\repos\T16_Project\DataLibrary\obj\Release\netstandard2.0\DataLibrary.AssemblyInfoInputs.cache
+C:\Users\Tonth\source\repos\T16_Project\DataLibrary\obj\Release\netstandard2.0\DataLibrary.AssemblyInfo.cs
+C:\Users\Tonth\source\repos\T16_Project\DataLibrary\obj\Release\netstandard2.0\DataLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Tonth\source\repos\T16_Project\DataLibrary\obj\Release\netstandard2.0\DataLibrary.dll
+C:\Users\Tonth\source\repos\T16_Project\DataLibrary\obj\Release\netstandard2.0\DataLibrary.pdb

@@ -1,0 +1,26 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Team16Project.Models
+{
+    public class DisplayCustomerModel
+    {
+        [Required]
+        [StringLength(20, ErrorMessage = "First name is too long")]
+        [MinLength(2, ErrorMessage = "First name is too short")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [StringLength(20, ErrorMessage = "Last name is too long")]
+        [MinLength(2, ErrorMessage = "Last name is too short")]
+        public string LastName { get; set; }
+
+        [Required]
+        public string Payment { get; set; }
+        [StringLength(40, ErrorMessage = "Email address is too long")]
+        [MinLength(11, ErrorMessage = "Email address is too short")]
+        public string EmailAddress { get; set; }
+    }
+}
