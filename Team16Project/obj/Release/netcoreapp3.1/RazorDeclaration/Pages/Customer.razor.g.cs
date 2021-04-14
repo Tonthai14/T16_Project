@@ -76,14 +76,35 @@ using Team16Project.Shared;
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\FetchData.razor"
-using Team16Project.Data;
+#line 3 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Customer.razor"
+using DataLibrary;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 4 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Customer.razor"
+using DataLibrary.Models;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 5 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Customer.razor"
+using Team16Project.Models;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 6 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Customer.razor"
+using Microsoft.Extensions.Configuration;
 
 #line default
 #line hidden
 #nullable disable
     [Microsoft.AspNetCore.Components.RouteAttribute("/fetchdata")]
-    public partial class FetchData : Microsoft.AspNetCore.Components.ComponentBase
+    public partial class Customer : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
         protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
@@ -91,19 +112,41 @@ using Team16Project.Data;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 39 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\FetchData.razor"
+#line 52 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Customer.razor"
        
-    private WeatherForecast[] forecasts;
+    List<CustomerModel> customers;
+    private DisplayCustomerModel newCustomer = new DisplayCustomerModel();
+
+    private async Task InsertCustomer()
+    {
+        string query = "INSERT INTO CUSTOMER (FirstName, LastName, Payment, PARK_ParkId) VALUES (@FirstName, @LastName, @Payment, 0);";
+
+        await _data.SaveData(query,
+            new { FirstName = newCustomer.FirstName, LastName = newCustomer.LastName, Payment = newCustomer.Payment },
+            _config.GetConnectionString("default"));
+        CustomerModel employee = new CustomerModel
+        {
+            FirstName = newCustomer.FirstName,
+            LastName = newCustomer.LastName,
+            Payment = newCustomer.Payment
+        };
+        customers.Add(employee);
+        // Reset so new employee variable has clean slate of information
+        newCustomer = new DisplayCustomerModel();
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        string query = "SELECT * FROM CUSTOMER";
+
+        customers = await _data.LoadData<CustomerModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
     }
 
 #line default
 #line hidden
 #nullable disable
-        [global::Microsoft.AspNetCore.Components.InjectAttribute] private WeatherForecastService ForecastService { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private IConfiguration _config { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private IDataAccess _data { get; set; }
     }
 }
 #pragma warning restore 1591

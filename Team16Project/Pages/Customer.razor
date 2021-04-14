@@ -1,0 +1,80 @@
+﻿@page "/customers"
+
+@using DataLibrary
+@using DataLibrary.Models
+@using Team16Project.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAccess _data
+@inject IConfiguration _config
+
+<h3>Customer List</h3>
+
+@if (customers == null)
+{
+    <p><em>Loading customer list...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Payment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in customers)
+            {
+                <tr>
+                    <td>@customer.FirstName</td>
+                    <td>@customer.LastName</td>
+                    <td>@customer.Payment</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h4>Add a customer</h4>
+    <EditForm Model="@newCustomer" OnValidSubmit="@InsertCustomer">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="col-12 row">
+            <input class="form-control col-3" @bind="newCustomer.FirstName" placeholder="First Name" />
+            <input class="form-control col-3" @bind="newCustomer.LastName" placeholder="Last Name" />
+            <input class="form-control col-4" @bind="newCustomer.Payment" placeholder="Payment Type" />
+            <button type="submit" class="btn btn-primary">Add Customer</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    List<CustomerModel> customers;
+    private DisplayCustomerModel newCustomer = new DisplayCustomerModel();
+
+    private async Task InsertCustomer()
+    {
+        string query = "INSERT INTO CUSTOMER (FirstName, LastName, Payment, PARK_ParkId) VALUES (@FirstName, @LastName, @Payment, 0);";
+
+        await _data.SaveData(query,
+            new { FirstName = newCustomer.FirstName, LastName = newCustomer.LastName, Payment = newCustomer.Payment },
+            _config.GetConnectionString("default"));
+        CustomerModel employee = new CustomerModel
+        {
+            FirstName = newCustomer.FirstName,
+            LastName = newCustomer.LastName,
+            Payment = newCustomer.Payment
+        };
+        customers.Add(employee);
+        // Reset so new employee variable has clean slate of information
+        newCustomer = new DisplayCustomerModel();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string query = "SELECT * FROM CUSTOMER";
+
+        customers = await _data.LoadData<CustomerModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+    }
+}
