@@ -6,9 +6,14 @@
 @using Team16Project.Data
 @using Team16Project.Models
 @using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.Razor;
+@using Microsoft.AspNetCore.Authentication;
+@using Microsoft.AspNetCore.Authentication.Cookies;
+@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims;
 @inject IDataAccess _data
 @inject IConfiguration _config
-@inject AuthenticationStateProvider auth
 @inject NavigationManager nav
 
 
@@ -42,8 +47,8 @@
     </div>
 </div>
 
-
 @code {
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
     private LoginModel loginModel = new LoginModel();
 
     List<StaffModel> employee;
@@ -62,7 +67,8 @@
             if (employee.Any())
             {
                 LoginMessage = "User found";
-                nav.NavigateTo("/");
+             
+
             }
             else
             {
