@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using DataLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,8 +14,9 @@ namespace Team16Project
 {
     public class Program
     {
+        public static StaffModel loggedInUser { get; set; }
         public static void Main(string[] args)
-        {
+        {          
             CreateHostBuilder(args).Build().Run();
         }
 

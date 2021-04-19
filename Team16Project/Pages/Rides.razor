@@ -3,10 +3,13 @@
 @using DataLibrary
 @using DataLibrary.Models
 @using Team16Project.Models
+@using Team16Project.Pages
 @using Microsoft.Extensions.Configuration
 @inject IDataAccess _data
 @inject IConfiguration _config
 
+@if (permitted)
+{
     <h3>Rides List</h3>
     @if (rides == null)
     {
@@ -37,44 +40,58 @@
         </table>
     }
 
-    <h3>Add a new ride</h3>
-    <EditForm Model="@newRide" OnValidSubmit="@InsertData">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+    @if (adminPermitted)
+    {
+        <h3>Add a new ride</h3>
+        <EditForm Model="@newRide" OnValidSubmit="@InsertData">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-        <div class="col-8 row">
-            <input type="number" class="form-control col-2" @bind="newRide.TicketsToRide" placeholder="Tickets To Ride" />
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-    </EditForm>
-
-    @code {
-        
-        List<RideModel> rides;
-        private DisplayRideModel newRide = new DisplayRideModel();
-
-        private async Task InsertData()
-        {
-            string query = "INSERT INTO RIDE(TimesRidden, TicketsToRide) VALUES (@TimesRidden, @TicketsToRide);";
-
-            await _data.SaveData(query,
-                new { TimesRidden = 0, TicketsToRide = newRide.TicketsToRide },
-                _config.GetConnectionString("default"));
-        }
-
-        private async Task UpdateData()
-        {
-            string query = "UPDATE RIDE SET tickets_to_ride = @tickets_to_ride WHERE ride_id = @ride_id";
-
-            await _data.SaveData(query, new { FirstName = "@FirstName", LastName = "@LastName" }, _config.GetConnectionString("default"));
-
-            await OnInitializedAsync();
-        }
-
-        protected override async Task OnInitializedAsync()
-        {
-            string query = "SELECT * FROM RIDE";
-
-            rides = await _data.LoadData<RideModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
-        }
+            <div class="col-8 row">
+                <input type="number" class="form-control col-2" @bind="newRide.TicketsToRide" placeholder="Tickets To Ride" />
+                <button type="submit" class="btn btn-primary" disabled>Submit</button>
+            </div>
+        </EditForm>
     }
+}
+else
+{
+    <p><em>Access Denied</em></p>
+}
+
+
+@code {
+    bool permitted = (Program.loggedInUser.Job == "Admin" || Program.loggedInUser.Job == "Repair");
+    bool adminPermitted = (Program.loggedInUser.Job == "Admin");
+
+    List<RideModel> rides;
+    private DisplayRideModel newRide = new DisplayRideModel();
+
+    private async Task InsertData()
+    {
+        string query = "INSERT INTO RIDE(TimesRidden, TicketsToRide) VALUES (@TimesRidden, @TicketsToRide);";
+
+        await _data.SaveData(query,
+            new { TimesRidden = 0, TicketsToRide = newRide.TicketsToRide },
+            _config.GetConnectionString("default"));      
+    }
+
+    private async Task UpdateData()
+    {
+        string query = "UPDATE RIDE SET tickets_to_ride = @tickets_to_ride WHERE ride_id = @ride_id";
+
+        await _data.SaveData(query, new { FirstName = "@FirstName", LastName = "@LastName" }, _config.GetConnectionString("default"));
+
+        await OnInitializedAsync();
+        
+    }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        string query = "SELECT * FROM RIDE";
+
+        rides = await _data.LoadData<RideModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+    }
+}

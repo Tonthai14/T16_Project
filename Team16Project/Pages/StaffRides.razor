@@ -7,41 +7,50 @@
 @inject IDataAccess _data
 @inject IConfiguration _config
 
-<h3>Rides Information</h3>
-
-@if (rides == null)
+@if (permitted)
 {
-    <p><em>Loading ride information</em></p>
+    <h3>Rides Information</h3>
+
+    @if (rides == null)
+    {
+        <p><em>Loading ride information</em></p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Times Ridden</th>
+                    <th>Tickets To Ride</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ride in rides)
+                {
+                    <tr>
+                        <td>@ride.RideName</td>
+                        <td>@ride.TimesRidden</td>
+                        <td>@ride.TicketsToRide</td>
+                        <td>
+                            <button type="button" class="btn btn-primary">
+                                Add
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Times Ridden</th>
-                <th>Tickets To Ride</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ride in rides)
-            {
-                <tr>
-                    <td>@ride.RideName</td>
-                    <td>@ride.TimesRidden</td>
-                    <td>@ride.TicketsToRide</td>
-                    <td>
-                        <button type="button" class="btn btn-primary">
-                            Add
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <p><em>Access Denied</em></p>
 }
 
 @code {
+    bool permitted = (Program.loggedInUser.Job == "Admin" || Program.loggedInUser.Job == "Service");
+
     List<StaffRideModel> rides;
     private DisplayStaffRideModel thisRide = new DisplayStaffRideModel();
 

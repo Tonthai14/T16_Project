@@ -7,84 +7,92 @@
 @inject IDataAccess _data
 @inject IConfiguration _config
 
-<h3>Staff Information</h3>
-
-@if (staff == null)
+@if (permitted)
 {
-    <p><em>Loading staff information...</em></p>
+    <h3>Staff Information</h3>
+    @if (staff == null)
+    {
+        <p><em>Loading staff information...</em></p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Job</th>
+                    <th>Employee ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var employee in staff)
+                {
+                    if (employee.IsBeingEdited)
+                    {
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control" placeholder="@employee.FirstName" @bind="@employee.FirstName" />
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" placeholder="@employee.LastName" @bind="@employee.LastName" />
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" placeholder="@employee.Job" @bind="@employee.Job" />
+                            </td>
+                            <td>@employee.StaffId</td>
+                            <td>
+                                <button type="button" class="btn btn-primary" @onclick="@(() => UpdateStaff(employee))">
+                                    Save
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary" @onclick="@(() => EnableEdit(false, employee))">
+                                    Cancel
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>@employee.FirstName</td>
+                            <td>@employee.LastName</td>
+                            <td>@employee.Job</td>
+                            <td>@employee.StaffId</td>
+                            <td>
+                                <button type="button" class="btn btn-primary" @onclick="@(() => EnableEdit(true, employee))">
+                                    Edit
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+
+    <h4>Add a new employee</h4>
+    <EditForm Model="@newStaff" OnValidSubmit="@InsertStaff">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="col-12 row">
+            <input class="form-control col-4" @bind="newStaff.FirstName" placeholder="First Name" />
+            <input class="form-control col-4" @bind="newStaff.LastName" placeholder="Last Name" />
+            <input class="form-control col-2" @bind="newStaff.Job" placeholder="Job" />
+            <button type="submit" class="btn btn-primary">Add Employee</button>
+        </div>
+    </EditForm>
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Job</th>
-                <th>Employee ID</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var employee in staff)
-            {
-                if (employee.IsBeingEdited)
-                {
-                    <tr>
-                        <td>
-                            <input type="text" class="form-control" placeholder="@employee.FirstName" @bind="@employee.FirstName" />
-                        </td>
-                        <td>
-                            <input type="text" class="form-control" placeholder="@employee.LastName" @bind="@employee.LastName" />
-                        </td>
-                        <td>
-                            <input type="text" class="form-control" placeholder="@employee.Job" @bind="@employee.Job" />
-                        </td>
-                        <td>@employee.StaffId</td>
-                        <td>
-                            <button type="button" class="btn btn-primary" @onclick="@(() => UpdateStaff(employee))">
-                                Save
-                            </button>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-primary" @onclick="@(() => EnableEdit(false, employee))">
-                                Cancel
-                            </button>
-                        </td>
-                    </tr>
-                }
-                else
-                {
-                    <tr>
-                        <td>@employee.FirstName</td>
-                        <td>@employee.LastName</td>
-                        <td>@employee.Job</td>
-                        <td>@employee.StaffId</td>
-                        <td>
-                            <button type ="button" class="btn btn-primary" @onclick="@(() => EnableEdit(true, employee))">
-                                Edit
-                            </button>
-                        </td>
-                    </tr>
-                }
-            }
-        </tbody>
-    </table>
+    <p><em>Access Denied</em></p>
 }
 
-<h4>Add a new employee</h4>
-<EditForm Model="@newStaff" OnValidSubmit="@InsertStaff">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="col-12 row">
-        <input class="form-control col-4" @bind="newStaff.FirstName" placeholder="First Name" />
-        <input class="form-control col-4" @bind="newStaff.LastName" placeholder="Last Name" />
-        <input class="form-control col-2" @bind="newStaff.Job" placeholder="Job" />
-        <button type="submit" class="btn btn-primary">Add Employee</button>
-    </div>
-</EditForm>
-
 @code {
+    bool permitted = (Program.loggedInUser.Job == "Admin");
+
     List<StaffModel> staff;
     private DisplayStaffModel newStaff = new DisplayStaffModel();
 
@@ -94,7 +102,7 @@ else
     }
 
     private async Task InsertStaff()
-    {
+    {        
         string query = "INSERT INTO STAFF (FirstName, LastName, Job, PARK_ParkId) VALUES (@FirstName, @LastName, @Job, 0);";
 
         await _data.SaveData(query,
@@ -114,7 +122,7 @@ else
         };
         staff.Add(employee);
         // Reset so new employee variable has clean slate of information
-        newStaff = new DisplayStaffModel();
+        newStaff = new DisplayStaffModel();       
     }
 
     private async Task UpdateStaff(StaffModel staff)
@@ -132,13 +140,12 @@ else
     private async Task DeleteStaff()
     {
         string query = "DELETE FROM STAFF WHERE StaffId = @StaffId";
-
     }
 
     protected override async Task OnInitializedAsync()
     {
         string query = "SELECT * FROM STAFF";
 
-        staff = await _data.LoadData<StaffModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+        staff = await _data.LoadData<StaffModel, dynamic>(query, new { }, _config.GetConnectionString("default"));       
     }
 }

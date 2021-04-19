@@ -56,6 +56,11 @@
 
     public string LoginMessage { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        Program.loggedInUser = null;
+    }
+
     private async Task<bool> OnValidSubmit()
     {
         isBusy = true;
@@ -67,8 +72,10 @@
             if (employee.Any())
             {
                 LoginMessage = "User found";
-             
 
+                Program.loggedInUser = employee[0];
+                isBusy = false;
+                nav.NavigateTo("/");
             }
             else
             {
