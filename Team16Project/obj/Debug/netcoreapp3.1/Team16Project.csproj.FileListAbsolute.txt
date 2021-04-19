@@ -219,3 +219,7 @@ C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\obj\Debug\netcoreapp3.1\Razor
 C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\obj\Debug\netcoreapp3.1\Razor\Pages\Rides.razor.g.cs
 C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\EmployeeRides.razor.g.cs
 C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\obj\Debug\netcoreapp3.1\Razor\Pages\EmployeeRides.razor.g.cs
+C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\HomeServiceStaff.razor.g.cs
+C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\MaintenanceRides.razor.g.cs
+C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\obj\Debug\netcoreapp3.1\Razor\Pages\HomeServiceStaff.razor.g.cs
+C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\obj\Debug\netcoreapp3.1\Razor\Pages\MaintenanceRides.razor.g.cs

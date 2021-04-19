@@ -112,7 +112,7 @@ using Microsoft.Extensions.Configuration;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 47 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Rides.razor"
+#line 49 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Rides.razor"
        
     List<RidesModel> rides;
     private DisplayRidesModel newRide = new DisplayRidesModel();

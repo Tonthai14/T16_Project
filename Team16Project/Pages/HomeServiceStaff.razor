@@ -1,0 +1,15 @@
+﻿@page "/serviceStaffHome"
+
+@using DataLibrary
+@using DataLibrary.Models
+@using Team16Project.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAccess _data
+@inject IConfiguration _config
+
+<h3>Service Staff Home</h3>
+
+
+@code{
+    string query = "SELECT NumCustomers, MaxCapacity FROM PARK WHERE ParkId = 0 AND NumCustomers = MaxCapacity;";
+}

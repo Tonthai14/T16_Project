@@ -7,67 +7,74 @@
 @inject IDataAccess _data
 @inject IConfiguration _config
 
-<h4>Ride Information</h4>
-
+<h3>Rides List</h3>
 @if (rides == null)
-{
-    <p><em>Loading ride information...</em></p>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Tickets Required</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ride in rides)
-            {
-                <tr>
-                    <td>@ride.ride_name</td>
-                    <td>@ride.tickets_to_ride</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+    {
+<p><em>Loading ride information...</em></p>
+    }
+    else
+    {
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Ride ID</th>
+            <th>Times Ridden</th>
+            <th>Tickets to Ride</th>
+            <th>Tickets Used</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ride in rides)
+                {
+        <tr>
+            <td>@ride.RideId</td>
+            <td>@ride.TimesRidden</td>
+            <td>@ride.TicketsToRide</td>
+            <td>@ride.TicketsUsed</td>
+        </tr>
+                }
+    </tbody>
+</table>
+    }
 
 <h3>Add a new ride</h3>
 <EditForm Model="@newRide" OnValidSubmit="@InsertData">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <InputText id="RideName" @bind-Value="newRide.RideName" />
-    <InputText id="TicketsToRide" @bind-Value="newRide.TicketsRequired" />
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <div class="col-8 row">
+        <input type="number" class="form-control col-2" @bind="newRide.TicketsToRide" placeholder="Tickets To Ride" />
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
 </EditForm>
 
 @code {
-    List<RidesModel> rides;
-    private DisplayRidesModel newRide = new DisplayRidesModel();
 
-    private async Task InsertData()
-    {
-        string query = "INSERT INTO ride(ride_name, tickets_to_ride) values ('@RideName', '@TicketsRequired');";
+        List<RideModel> rides;
+        private DisplayRideModel newRide = new DisplayRideModel();
 
-        await _data.SaveData(query, new { RideName = "@RideName", TicketsRequired = "@TicketsRequired" }, _config.GetConnectionString("default"));
-    }
+        private async Task InsertData()
+        {
+            string query = "INSERT INTO RIDE(TimesRidden, TicketsToRide) VALUES (@TimesRidden, @TicketsToRide);";
 
-    private async Task UpdateData()
-    {
-        string query = "update ride set TicketsRequired = @TicketsRequired where RideName = @RideName";
+            await _data.SaveData(query,
+                new { TimesRidden = 0, TicketsToRide = newRide.TicketsToRide },
+                _config.GetConnectionString("default"));
+        }
 
-        await _data.SaveData(query, new { TicketsRequired = "@TicketsRequired", RideName = "@RideName" }, _config.GetConnectionString("default"));
+        private async Task UpdateData()
+        {
+            string query = "UPDATE RIDE SET tickets_to_ride = @tickets_to_ride WHERE ride_id = @ride_id";
 
-        await OnInitializedAsync();
-    }
+            await _data.SaveData(query, new { FirstName = "@FirstName", LastName = "@LastName" }, _config.GetConnectionString("default"));
 
-    protected override async Task OnInitializedAsync()
-    {
-        string query = "SELECT * FROM RIDE";
+            await OnInitializedAsync();
+        }
 
-        rides = await _data.LoadData<RidesModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
-    }
+        protected override async Task OnInitializedAsync()
+        {
+            string query = "SELECT * FROM RIDE";
+
+            rides = await _data.LoadData<RideModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+        }
 }

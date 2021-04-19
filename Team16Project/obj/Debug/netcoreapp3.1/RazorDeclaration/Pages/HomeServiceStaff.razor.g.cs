@@ -76,35 +76,35 @@ using Team16Project.Shared;
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Rides.razor"
+#line 3 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\HomeServiceStaff.razor"
 using DataLibrary;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Rides.razor"
+#line 4 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\HomeServiceStaff.razor"
 using DataLibrary.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Rides.razor"
+#line 5 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\HomeServiceStaff.razor"
 using Team16Project.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 6 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Rides.razor"
+#line 6 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\HomeServiceStaff.razor"
 using Microsoft.Extensions.Configuration;
 
 #line default
 #line hidden
 #nullable disable
-    [Microsoft.AspNetCore.Components.RouteAttribute("/rides")]
-    public partial class Rides : Microsoft.AspNetCore.Components.ComponentBase
+    [Microsoft.AspNetCore.Components.RouteAttribute("/serviceStaffHome")]
+    public partial class HomeServiceStaff : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
         protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
@@ -112,33 +112,9 @@ using Microsoft.Extensions.Configuration;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 49 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Rides.razor"
-       
-    List<RidesModel> rides;
-    private DisplayRidesModel newRide = new DisplayRidesModel();
-
-    private async Task InsertData()
-    {
-        string query = "INSERT INTO ride(ride_name, tickets_to_ride) values ('@RideName', '@TicketsRequired');";
-
-        await _data.SaveData(query, new { RideName = "@RideName", TicketsRequired = "@TicketsRequired" }, _config.GetConnectionString("default"));
-    }
-
-    private async Task UpdateData()
-    {
-        string query = "update ride set TicketsRequired = @TicketsRequired where RideName = @RideName";
-
-        await _data.SaveData(query, new { TicketsRequired = "@TicketsRequired", RideName = "@RideName" }, _config.GetConnectionString("default"));
-
-        await OnInitializedAsync();
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        string query = "SELECT * FROM RIDE";
-
-        rides = await _data.LoadData<RidesModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
-    }
+#line 13 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\HomeServiceStaff.razor"
+      
+    string query = "SELECT NumCustomers, MaxCapacity FROM PARK WHERE ParkId = 0 AND NumCustomers = MaxCapacity;";
 
 #line default
 #line hidden

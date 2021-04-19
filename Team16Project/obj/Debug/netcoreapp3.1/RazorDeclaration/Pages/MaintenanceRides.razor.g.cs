@@ -76,35 +76,35 @@ using Team16Project.Shared;
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Rides.razor"
+#line 3 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\MaintenanceRides.razor"
 using DataLibrary;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Rides.razor"
+#line 4 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\MaintenanceRides.razor"
 using DataLibrary.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Rides.razor"
+#line 5 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\MaintenanceRides.razor"
 using Team16Project.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 6 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Rides.razor"
+#line 6 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\MaintenanceRides.razor"
 using Microsoft.Extensions.Configuration;
 
 #line default
 #line hidden
 #nullable disable
-    [Microsoft.AspNetCore.Components.RouteAttribute("/rides")]
-    public partial class Rides : Microsoft.AspNetCore.Components.ComponentBase
+    [Microsoft.AspNetCore.Components.RouteAttribute("/ridesNeedMaintenance")]
+    public partial class MaintenanceRides : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
         protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
@@ -112,32 +112,30 @@ using Microsoft.Extensions.Configuration;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 49 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Rides.razor"
+#line 52 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\MaintenanceRides.razor"
        
-    List<RidesModel> rides;
-    private DisplayRidesModel newRide = new DisplayRidesModel();
-
-    private async Task InsertData()
-    {
-        string query = "INSERT INTO ride(ride_name, tickets_to_ride) values ('@RideName', '@TicketsRequired');";
-
-        await _data.SaveData(query, new { RideName = "@RideName", TicketsRequired = "@TicketsRequired" }, _config.GetConnectionString("default"));
-    }
+    List<MaintenanceRideModel> ridesNeedMaintenance;
+    private DisplayMaintenanceRideModel newRidesNeedMaintenance = new DisplayMaintenanceRideModel();
 
     private async Task UpdateData()
     {
-        string query = "update ride set TicketsRequired = @TicketsRequired where RideName = @RideName";
+        string query = "UPDATE RIDE SET TimesRidden = @TimesRidden, NeedsMaintenance = @NeedsMaintenance WHERE RideName = @RideName";
+        string resetTableQuery = "SELECT RideId, RideName, NeedsMaintenance FROM RIDE WHERE RIDE.NeedsMaintenance = 'Y';";
 
-        await _data.SaveData(query, new { TicketsRequired = "@TicketsRequired", RideName = "@RideName" }, _config.GetConnectionString("default"));
+        await _data.SaveData(query,
+            new { TimesRidden = 0, NeedsMaintenance = 'N', RideName = newRidesNeedMaintenance.RideName },
+            _config.GetConnectionString("default"));
 
-        await OnInitializedAsync();
+        ridesNeedMaintenance = await _data.LoadData<MaintenanceRideModel, dynamic>(resetTableQuery, new { }, _config.GetConnectionString("default"));
+
+
     }
 
     protected override async Task OnInitializedAsync()
     {
-        string query = "SELECT * FROM RIDE";
+        string query = "SELECT RideId, RideName, NeedsMaintenance FROM RIDE WHERE RIDE.NeedsMaintenance = 'Y';";
 
-        rides = await _data.LoadData<RidesModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+        ridesNeedMaintenance = await _data.LoadData<MaintenanceRideModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
     }
 
 #line default

@@ -1,0 +1,76 @@
+﻿@page "/ridesNeedMaintenance"
+
+@using DataLibrary
+@using DataLibrary.Models
+@using Team16Project.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAccess _data
+@inject IConfiguration _config
+
+<h3>Rides Currently Needing Maintenance</h3>
+
+@if (ridesNeedMaintenance == null)
+{
+    <p><em>Loading ride information...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ride ID</th>
+                <th>Ride Name</th>
+                <th>Ride Needs Maintenance?</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ride in ridesNeedMaintenance)
+            {
+                <tr>
+                    <td>@ride.RideId</td>
+                    <td>@ride.RideName</td>
+                    <td>@ride.NeedsMaintenance</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h3>Do Maintenance On Ride</h3>
+<EditForm Model="@newRidesNeedMaintenance" OnValidSubmit="@UpdateData">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="col-12 row">
+        <input class="form-control col-4" @bind="newRidesNeedMaintenance.RideName" placeholder="Ride Name" />
+        <button type="submit" class="btn btn-primary">Do Maintenance</button>
+    </div>
+
+</EditForm>
+
+
+
+@code {
+    List<MaintenanceRideModel> ridesNeedMaintenance;
+    private DisplayMaintenanceRideModel newRidesNeedMaintenance = new DisplayMaintenanceRideModel();
+
+    private async Task UpdateData()
+    {
+        string query = "UPDATE RIDE SET TimesRidden = @TimesRidden, NeedsMaintenance = @NeedsMaintenance WHERE RideName = @RideName";
+        string resetTableQuery = "SELECT RideId, RideName, NeedsMaintenance FROM RIDE WHERE RIDE.NeedsMaintenance = 'Y';";
+
+        await _data.SaveData(query,
+            new { TimesRidden = 0, NeedsMaintenance = 'N', RideName = newRidesNeedMaintenance.RideName },
+            _config.GetConnectionString("default"));
+
+        ridesNeedMaintenance = await _data.LoadData<MaintenanceRideModel, dynamic>(resetTableQuery, new { }, _config.GetConnectionString("default"));
+
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string query = "SELECT RideId, RideName, NeedsMaintenance FROM RIDE WHERE RIDE.NeedsMaintenance = 'Y';";
+
+        ridesNeedMaintenance = await _data.LoadData<MaintenanceRideModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+    }
+}
