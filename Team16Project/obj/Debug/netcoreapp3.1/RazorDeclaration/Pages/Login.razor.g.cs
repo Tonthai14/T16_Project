@@ -84,14 +84,70 @@ using DataLibrary;
 #nullable disable
 #nullable restore
 #line 5 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Login.razor"
-using Team16Project.Data;
+using DataLibrary.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 6 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Login.razor"
+using Team16Project.Data;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 7 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Login.razor"
+using Team16Project.Models;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 8 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Login.razor"
 using Microsoft.Extensions.Configuration;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 9 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Login.razor"
+using Microsoft.AspNetCore.Mvc;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 10 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Login.razor"
+using Microsoft.AspNetCore.Mvc.Razor;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 11 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Login.razor"
+using Microsoft.AspNetCore.Authentication;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 12 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Login.razor"
+using Microsoft.AspNetCore.Authentication.Cookies;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 13 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Login.razor"
+using Microsoft.AspNetCore.Http;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 14 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Login.razor"
+using System.Security.Claims;
 
 #line default
 #line hidden
@@ -106,25 +162,49 @@ using Microsoft.Extensions.Configuration;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 43 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Login.razor"
+#line 50 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\Login.razor"
        
-    private Employee employee;
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private LoginModel loginModel = new LoginModel();
+
+    List<StaffModel> employee;
+    private bool isBusy;
+
     public string LoginMessage { get; set; }
 
-    bool isBusy = false;
-    string message = string.Empty;
-
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        employee = new Employee();
-
+        Program.loggedInUser = null;
     }
 
-    private async Task<bool> ValidateLogin()
+    private async Task<bool> OnValidSubmit()
     {
-        string query = "SELECT staff_id, password FROM STAFF WHERE staff_id = @employee.Id AND password = @employee.password";
+        isBusy = true;
+        string query = "SELECT * FROM STAFF WHERE id = '" + int.Parse(loginModel.UserID) + "' AND password = '" + loginModel.Password + "'";
 
-        
+        try
+        {
+            employee = await _data.LoadData<StaffModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+            if (employee.Any())
+            {
+                LoginMessage = "User found";
+
+                Program.loggedInUser = employee[0];
+                isBusy = false;
+                nav.NavigateTo("/");
+            }
+            else
+            {
+                LoginMessage = "User not found";
+                isBusy = false;
+            }
+        }
+        catch
+        {
+            LoginMessage = "An error has occured.";
+            isBusy = false;
+        }
+
         return await Task.FromResult(true);
     }
 
@@ -132,7 +212,6 @@ using Microsoft.Extensions.Configuration;
 #line hidden
 #nullable disable
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager nav { get; set; }
-        [global::Microsoft.AspNetCore.Components.InjectAttribute] private AuthenticationStateProvider auth { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IConfiguration _config { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IDataAccess _data { get; set; }
     }

@@ -83,7 +83,11 @@ using Team16Project.Shared;
         }
         #pragma warning restore 1998
 #nullable restore
+<<<<<<< HEAD
 #line 48 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Shared\NavMenu.razor"
+=======
+#line 38 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Shared\NavMenu.razor"
+>>>>>>> 85184454f723dacbfc4e31912099d9f17a119edb
        
     private bool collapseNavMenu = true;
 

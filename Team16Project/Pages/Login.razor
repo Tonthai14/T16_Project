@@ -2,62 +2,93 @@
 
 @layout LoginLayout
 @using DataLibrary
+@using DataLibrary.Models
 @using Team16Project.Data
+@using Team16Project.Models
 @using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.Razor;
+@using Microsoft.AspNetCore.Authentication;
+@using Microsoft.AspNetCore.Authentication.Cookies;
+@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims;
 @inject IDataAccess _data
 @inject IConfiguration _config
-@inject AuthenticationStateProvider auth
 @inject NavigationManager nav
 
 
+<div class="card">
+    <h4 class="card-header" style="font-weight:bold; color:black">Login with your credentials</h4>
+    <div class="card-body">
+        <EditForm Model="@loginModel" OnValidSubmit="@OnValidSubmit">
+            <DataAnnotationsValidator />
 
-<EditForm Model="@employee" OnValidSubmit="@ValidateLogin">
-    <div>
-        <br /><br /><br /><br /><br />
+            <div class="form-group">
+                <label>UserID</label>
+                <InputText @bind-Value="loginModel.UserID" class="form-control" />
+                <ValidationMessage For="@(() => loginModel.UserID)" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <InputText @bind-Value="loginModel.Password" type="password" class="form-control" />
+                <ValidationMessage For="@(() => loginModel.Password)" />
+            </div>
+            <button disabled="@isBusy" class="btn btn-primary">
+                @if (isBusy)
+                {
+                    <span class="spinner-border spinner-border-sm mr-1" />
+                }
+                Login
+            </button>
+            <div class="col-12 row" style="text-align:left; font-weight:bold">
+                <span class="col-12">@LoginMessage</span>
+            </div>
+        </EditForm>
     </div>
-    <div>
-        <h3 style="font-weight:bold; color:black">Login with your credentials</h3>
-    </div>
-    <div>
-        <br />
-    </div>
-    <div class="col-6 row">
-        <input class="form-control col-6" @bind="employee.Id" placeholder="Employee ID" />
-    </div>
-    <br />
-    <div class="col-6 row">
-        <input type="password" class="form-control col-6" @bind="employee.Password" placeholder="Password" />
-    </div>
-    <br />
-    <div class="col-12 row">
-        <span class="col-12"></span>
-        <input type="submit" class="form-control col-6 btn btn-primary" value="Login" />
-    </div>
-    <br />
-    <div class="col-12 row" style="text-align:left; font-weight:bold">
-        <span class="col-12">@LoginMessage</span>
-    </div>
-</EditForm>
-
+</div>
 
 @code {
-    private Employee employee;
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private LoginModel loginModel = new LoginModel();
+
+    List<StaffModel> employee;
+    private bool isBusy;
+
     public string LoginMessage { get; set; }
 
-    bool isBusy = false;
-    string message = string.Empty;
-
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        employee = new Employee();
-
+        Program.loggedInUser = null;
     }
 
-    private async Task<bool> ValidateLogin()
+    private async Task<bool> OnValidSubmit()
     {
-        string query = "SELECT staff_id, password FROM STAFF WHERE staff_id = @employee.Id AND password = @employee.password";
+        isBusy = true;
+        string query = "SELECT * FROM STAFF WHERE id = '" + int.Parse(loginModel.UserID) + "' AND password = '" + loginModel.Password + "'";
 
-        
+        try
+        {
+            employee = await _data.LoadData<StaffModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+            if (employee.Any())
+            {
+                LoginMessage = "User found";
+
+                Program.loggedInUser = employee[0];
+                isBusy = false;
+                nav.NavigateTo("/");
+            }
+            else
+            {
+                LoginMessage = "User not found";
+                isBusy = false;
+            }
+        }
+        catch
+        {
+            LoginMessage = "An error has occured.";
+            isBusy = false;
+        }
+
         return await Task.FromResult(true);
     }
 }

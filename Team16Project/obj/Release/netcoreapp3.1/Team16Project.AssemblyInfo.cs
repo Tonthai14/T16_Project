@@ -11,6 +11,10 @@
 using System;
 using System.Reflection;
 
+<<<<<<< HEAD
+=======
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("ff4d1979-d174-4fff-b062-0737108cfcda")]
+>>>>>>> 85184454f723dacbfc4e31912099d9f17a119edb
 [assembly: System.Reflection.AssemblyCompanyAttribute("Team16Project")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]

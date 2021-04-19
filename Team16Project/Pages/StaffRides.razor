@@ -1,0 +1,63 @@
+﻿@page "/staffrides"
+
+@using DataLibrary
+@using DataLibrary.Models
+@using Team16Project.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAccess _data
+@inject IConfiguration _config
+
+@if (permitted)
+{
+    <h3>Rides Information</h3>
+
+    @if (rides == null)
+    {
+        <p><em>Loading ride information</em></p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Times Ridden</th>
+                    <th>Tickets To Ride</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ride in rides)
+                {
+                    <tr>
+                        <td>@ride.RideName</td>
+                        <td>@ride.TimesRidden</td>
+                        <td>@ride.TicketsToRide</td>
+                        <td>
+                            <button type="button" class="btn btn-primary">
+                                Add
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+else
+{
+    <p><em>Access Denied</em></p>
+}
+
+@code {
+    bool permitted = (Program.loggedInUser.Job == "Admin" || Program.loggedInUser.Job == "Service");
+
+    List<StaffRideModel> rides;
+    private DisplayStaffRideModel thisRide = new DisplayStaffRideModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        string query = "SELECT * FROM RIDE";
+
+        rides = await _data.LoadData<StaffRideModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+    }
+}

@@ -78,7 +78,6 @@ C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Te
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Team16Project.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Team16Project.RazorComponent.input.cache
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\RazorDeclaration\App.razor.g.cs
-C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\FetchData.razor.g.cs
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Index.razor.g.cs
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Login.razor.g.cs
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Staff.razor.g.cs
@@ -121,7 +120,6 @@ C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Te
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Team16Project.TagHelpers.output.cache
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Team16Project.RazorCoreGenerate.cache
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Razor\App.razor.g.cs
-C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Razor\Pages\FetchData.razor.g.cs
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Razor\Pages\Index.razor.g.cs
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Razor\Pages\Login.razor.g.cs
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Razor\Pages\Staff.razor.g.cs
@@ -144,6 +142,7 @@ C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Te
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Team16Project.genruntimeconfig.cache
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Rides.razor.g.cs
 C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Razor\Pages\Rides.razor.g.cs
+<<<<<<< HEAD
 C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\bin\Debug\netcoreapp3.1\appsettings.Development.json
 C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\bin\Debug\netcoreapp3.1\appsettings.json
 C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\bin\Debug\netcoreapp3.1\Team16Project.exe
@@ -223,3 +222,9 @@ C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\obj\Debug\netcoreapp3.1\Razor
 C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\MaintenanceRides.razor.g.cs
 C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\obj\Debug\netcoreapp3.1\Razor\Pages\HomeServiceStaff.razor.g.cs
 C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\obj\Debug\netcoreapp3.1\Razor\Pages\MaintenanceRides.razor.g.cs
+=======
+C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Customer.razor.g.cs
+C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Razor\Pages\Customer.razor.g.cs
+C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\StaffRides.razor.g.cs
+C:\Users\Tonth\source\repos\T16_Project\Team16Project\obj\Debug\netcoreapp3.1\Razor\Pages\StaffRides.razor.g.cs
+>>>>>>> 85184454f723dacbfc4e31912099d9f17a119edb

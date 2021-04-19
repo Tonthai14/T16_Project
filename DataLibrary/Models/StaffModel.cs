@@ -7,11 +7,11 @@ namespace DataLibrary.Models
 {
     public class StaffModel
     {
-        public int staff_id { get; set; }
-        public string first_name { get; set; }
-        public string last_name { get; set; }
+        public int StaffId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Job { get; set; }
         public string Password { get; set; }
-
+        public bool IsBeingEdited { get; set; }
     }
 }

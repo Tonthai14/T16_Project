@@ -75,7 +75,23 @@ using Team16Project.Shared;
 #line default
 #line hidden
 #nullable disable
+<<<<<<< HEAD
     public partial class NavMenu : Microsoft.AspNetCore.Components.ComponentBase
+=======
+<<<<<<<< HEAD:Team16Project/obj/Release/netcoreapp3.1/RazorDeclaration/Shared/NavMenu.razor.g.cs
+    public partial class NavMenu : Microsoft.AspNetCore.Components.ComponentBase
+========
+#nullable restore
+#line 3 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\FetchData.razor"
+using Team16Project.Data;
+
+#line default
+#line hidden
+#nullable disable
+    [Microsoft.AspNetCore.Components.RouteAttribute("/fetchdata")]
+    public partial class FetchData : Microsoft.AspNetCore.Components.ComponentBase
+>>>>>>>> 85184454f723dacbfc4e31912099d9f17a119edb:Team16Project/obj/Debug/netcoreapp3.1/RazorDeclaration/Pages/FetchData.razor.g.cs
+>>>>>>> 85184454f723dacbfc4e31912099d9f17a119edb
     {
         #pragma warning disable 1998
         protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
@@ -83,7 +99,15 @@ using Team16Project.Shared;
         }
         #pragma warning restore 1998
 #nullable restore
+<<<<<<< HEAD
 #line 48 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Shared\NavMenu.razor"
+=======
+<<<<<<<< HEAD:Team16Project/obj/Release/netcoreapp3.1/RazorDeclaration/Shared/NavMenu.razor.g.cs
+#line 33 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Shared\NavMenu.razor"
+========
+#line 39 "C:\Users\jonat\OneDrive\Desktop\T16R\Team16Project\Pages\FetchData.razor"
+>>>>>>>> 85184454f723dacbfc4e31912099d9f17a119edb:Team16Project/obj/Debug/netcoreapp3.1/RazorDeclaration/Pages/FetchData.razor.g.cs
+>>>>>>> 85184454f723dacbfc4e31912099d9f17a119edb
        
     private bool collapseNavMenu = true;
 
