@@ -1,0 +1,185 @@
+﻿@page "/reports"
+
+@using DataLibrary
+@using DataLibrary.Models
+@using Team16Project.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAccess _data
+@inject IConfiguration _config
+@inject NavigationManager nav
+
+<h2>Generate Reports</h2>
+
+@if (rideReportGenerated)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ride ID</th>
+                <th>Avg Times Ridden</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ride in generatedRideReport)
+            {
+                <tr>
+                    <td>@ride.RideId</td>
+                    <td>@ride.TimesRidden</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (customerReportGenerated)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Year</th>
+                <th>Avg Number of Customers</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in generatedCustomerReport)
+            {
+                <tr>
+                    <td>@customer.Month</td>
+                    <td>@customer.Year</td>
+                    <td>@customer.NumCustomers</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (rideDates == null || customerDates == null)
+{
+    <p>Loading page...</p>
+}
+else
+{
+    <div class="card">
+        <div class="card-header" style="font-weight:bold; color:black">Ride Reports</div>
+        <div class="card-body">
+            <EditForm Model="@rideReport" OnValidSubmit="@FetchRideReport">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <select class="form-control selectpicker" @bind="rideReport.ReportType">
+                    <option>--Select Report Type--</option>
+                    <option>Most frequently ridden</option>
+                    <option>Most breakdowns</option>
+                </select>
+                <select class="form-control selectpicker" @bind="rideReport.StartDate">
+                    <option>--Select Start Date--</option>
+                    @foreach (var date in rideDates)
+                    {
+                        <option>@date.Date.Date</option>
+                    }
+                </select>
+                <select class="form-control selectpicker" @bind="rideReport.EndDate">
+                    <option>--Select End Date--</option>
+                    @foreach (var date in rideDates)
+                    {
+                        <option>@date.Date.Date</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Get Report</button>
+            </EditForm>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header" style="font-weight:bold; color:black">Customer Reports</div>
+        <div class="card-body">
+            <EditForm Model="@customerReport" OnValidSubmit="@FetchCustomerReport">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <select class="form-control selectpicker" @bind="customerReport.ReportType">
+                    <option>--Select Report Type--</option>
+                    <option>Most customers</option>
+                </select>
+                <select class="form-control selectpicker" @bind="customerReport.StartDate">
+                    <option>--Select Start Date--</option>
+                    @foreach (var date in customerDates)
+                    {
+                        <option>@date.Date.Date</option>
+                    }
+                </select>
+                <select class="form-control selectpicker" @bind="customerReport.EndDate">
+                    <option>--Select End Date--</option>
+                    @foreach (var date in customerDates)
+                    {
+                        <option>@date.Date.Date</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Get Report</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    List<RideDateModel> rideDates;
+    List<CustomerReportModel> customerDates;
+    private DisplayReportModel rideReport = new DisplayReportModel();
+    private DisplayReportModel customerReport = new DisplayReportModel();
+    bool rideReportGenerated = false;
+    bool customerReportGenerated = false;
+    List<RideReportModel> generatedRideReport;
+    List<CustomerReportModel> generatedCustomerReport;
+
+    private async Task FetchCustomerReport()
+    {
+        customerReportGenerated = false;
+        var startDate = customerReport.StartDate.Date;
+        var endDate = customerReport.EndDate.Date;
+
+        string query = "SELECT MONTH(EnteredPark) AS Month, YEAR(EnteredPark) AS Year, COUNT(*) AS NumCustomers " +
+                "FROM CUSTOMER WHERE DATE(EnteredPark) >= @startDate AND DATE(EnteredPark) <= @endDate " +
+                "GROUP BY MONTH(EnteredPark) ORDER BY Month DESC, YEAR DESC;";
+        generatedCustomerReport = await _data.LoadData<CustomerReportModel, dynamic>(query,
+            new { startDate = startDate, endDate = endDate },
+            _config.GetConnectionString("default"));
+        customerReportGenerated = true;
+        await OnInitializedAsync();
+    }
+
+    private async Task FetchRideReport()
+    {
+        rideReportGenerated = false;
+        var startDate = rideReport.StartDate.Date;
+        var endDate = rideReport.EndDate.Date;
+        string query = "SELECT RIDE_RideId AS RideId, AVG(TimesRidden) AS TimesRidden " +
+                 "FROM RIDE_DATE WHERE Date >= @startDate AND Date <= @endDate " +
+                 "GROUP BY MONTH(Date), RideId ORDER BY TimesRidden DESC;";
+        if (rideReport.ReportType == "Most frequently ridden")
+        {
+            query = "SELECT RIDE_RideId AS RideId, AVG(TimesRidden) AS TimesRidden " +
+                "FROM RIDE_DATE WHERE Date >= @startDate AND Date <= @endDate " +
+                "GROUP BY MONTH(Date), RideId ORDER BY TimesRidden DESC;";
+        }
+        else if(rideReport.ReportType == "Most breakdowns")
+        {
+            @*query = "SELECT RIDE_RideId AS RideId, AVG()" +
+                    "FROM BREAKDOWNS WHERE BreakdownDate >= @startDate AND BreakdownDate <= @endDate " +
+                    "GROUP BY MONTH(BreakdownDate), RideId ORDER BY "*@
+        }
+        generatedRideReport = await _data.LoadData<RideReportModel, dynamic>(query,
+            new { startDate = startDate, endDate = endDate },
+            _config.GetConnectionString("default"));
+        rideReportGenerated = true;
+        await OnInitializedAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string rideQuery = "SELECT DISTINCT Date FROM RIDE_DATE ORDER BY Date ASC;";
+        rideDates = await _data.LoadData<RideDateModel, dynamic>(rideQuery, new { }, _config.GetConnectionString("default"));
+        string customerQuery = "SELECT DISTINCT DATE(EnteredPark) AS Date FROM CUSTOMER ORDER BY Date ASC;";
+        customerDates = await _data.LoadData<CustomerReportModel, dynamic>(customerQuery, new { }, _config.GetConnectionString("default"));
+    }
+}

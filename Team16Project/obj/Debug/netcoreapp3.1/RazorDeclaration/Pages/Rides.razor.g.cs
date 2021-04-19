@@ -112,8 +112,9 @@ using Microsoft.Extensions.Configuration;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 52 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Rides.razor"
+#line 62 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Rides.razor"
        
+    bool permitted = (Program.loggedInUser.Job == "Manager");
     List<RideModel> rides;
     private DisplayRideModel newRide = new DisplayRideModel();
 
@@ -128,9 +129,9 @@ using Microsoft.Extensions.Configuration;
 
     private async Task UpdateData()
     {
-        string query = "UPDATE RIDE SET tickets_to_ride = @tickets_to_ride WHERE ride_id = @ride_id";
+        string query = "UPDATE RIDE SET TicketsToRide = @TicketsToRide WHERE RideId = @RideId";
 
-        await _data.SaveData(query, new { FirstName = "@FirstName", LastName = "@LastName" }, _config.GetConnectionString("default"));
+        await _data.SaveData(query, new {  }, _config.GetConnectionString("default"));
 
         await OnInitializedAsync();
     }

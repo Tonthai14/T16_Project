@@ -103,7 +103,7 @@ using Microsoft.Extensions.Configuration;
 #line default
 #line hidden
 #nullable disable
-    [Microsoft.AspNetCore.Components.RouteAttribute("/fetchdata")]
+    [Microsoft.AspNetCore.Components.RouteAttribute("/customers")]
     public partial class Customer : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
@@ -112,27 +112,30 @@ using Microsoft.Extensions.Configuration;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 52 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Customer.razor"
+#line 69 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Customer.razor"
        
+    bool permitted = (Program.loggedInUser.Job == "Service" || Program.loggedInUser.Job == "Manager");
     List<CustomerModel> customers;
     private DisplayCustomerModel newCustomer = new DisplayCustomerModel();
 
     private async Task InsertCustomer()
     {
-        string query = "INSERT INTO CUSTOMER (FirstName, LastName, Payment, PARK_ParkId) VALUES (@FirstName, @LastName, @Payment, 0);";
+        string query = "INSERT INTO CUSTOMER (FirstName, LastName, Payment, PARK_ParkId) VALUES (@FirstName, @LastName, @Payment, 1);";
 
         await _data.SaveData(query,
             new { FirstName = newCustomer.FirstName, LastName = newCustomer.LastName, Payment = newCustomer.Payment },
             _config.GetConnectionString("default"));
-        CustomerModel employee = new CustomerModel
-        {
-            FirstName = newCustomer.FirstName,
-            LastName = newCustomer.LastName,
-            Payment = newCustomer.Payment
-        };
-        customers.Add(employee);
-        // Reset so new employee variable has clean slate of information
-        newCustomer = new DisplayCustomerModel();
+        await OnInitializedAsync();
+    }
+
+    private async Task UpdateCustomer(CustomerModel customer)
+    {
+        string leftDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        string query = "UPDATE CUSTOMER SET LeftPark = @LeftPark WHERE customerId = @customerId";
+        await _data.SaveData(query,
+            new { LeftPark = leftDate, customerId = customer.CustomerId },
+            _config.GetConnectionString("default"));
+        await OnInitializedAsync();
     }
 
     protected override async Task OnInitializedAsync()

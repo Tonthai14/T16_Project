@@ -7,49 +7,60 @@
 @inject IDataAccess _data
 @inject IConfiguration _config
 
-<h3>Rides List</h3>
-
-@if (rides == null)
+@if (permitted)
 {
-    <p><em>Loading ride information...</em></p>
+    <h3>Rides List</h3>
+
+    @if (rides == null)
+    {
+        <p><em>Loading ride information...</em></p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Ride ID</th>
+                    <th>Ride Name</th>
+                    <th>Times Ridden Since Last Maintenance</th>
+                    <th>Tickets to Ride</th>
+                    <th>Tickets Used</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ride in rides)
+                {
+                    <tr>
+                        <td>@ride.RideId</td>
+                        <td>@ride.RideName</td>
+                        <td>@ride.TimesRidden</td>
+                        <td>@ride.TicketsToRide</td>
+                        <td>@ride.TicketsUsed</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <h3>Add a new ride</h3>
+    <EditForm Model="@newRide" OnValidSubmit="@InsertData">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="col-8 row">
+            <input type="text" class="form-control col-4" @bind="newRide.RideName" placeholder="Ride Name"/>
+            <input type="number" class="form-control col-2" @bind="newRide.TicketsToRide" placeholder="Tickets To Ride" />
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </EditForm>
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Ride ID</th>
-                <th>Times Ridden</th>
-                <th>Tickets to Ride</th>
-                <th>Tickets Used</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ride in rides)
-            {
-                <tr>
-                    <td>@ride.RideId</td>
-                    <td>@ride.TimesRidden</td>
-                    <td>@ride.TicketsToRide</td>
-                    <td>@ride.TicketsUsed</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <p><em>You are not authorized to view this page.</em></p>
 }
 
-<h3>Add a new ride</h3>
-<EditForm Model="@newRide" OnValidSubmit="@InsertData">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="col-8 row">
-        <input type="number" class="form-control col-2" @bind="newRide.TicketsToRide" placeholder="Tickets To Ride" />
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-</EditForm>
-
 @code {
+    bool permitted = (Program.loggedInUser.Job == "Manager");
     List<RideModel> rides;
     private DisplayRideModel newRide = new DisplayRideModel();
 
@@ -64,9 +75,9 @@ else
 
     private async Task UpdateData()
     {
-        string query = "UPDATE RIDE SET tickets_to_ride = @tickets_to_ride WHERE ride_id = @ride_id";
+        string query = "UPDATE RIDE SET TicketsToRide = @TicketsToRide WHERE RideId = @RideId";
 
-        await _data.SaveData(query, new { FirstName = "@FirstName", LastName = "@LastName" }, _config.GetConnectionString("default"));
+        await _data.SaveData(query, new {  }, _config.GetConnectionString("default"));
 
         await OnInitializedAsync();
     }

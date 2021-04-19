@@ -112,8 +112,9 @@ using Microsoft.Extensions.Configuration;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 52 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Rides.razor"
+#line 62 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Rides.razor"
        
+    bool permitted = (Program.loggedInUser.Job == "Manager");
     List<RideModel> rides;
     private DisplayRideModel newRide = new DisplayRideModel();
 

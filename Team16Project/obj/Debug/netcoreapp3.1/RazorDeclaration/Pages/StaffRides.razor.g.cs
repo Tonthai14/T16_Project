@@ -112,10 +112,18 @@ using Microsoft.Extensions.Configuration;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 39 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\StaffRides.razor"
+#line 55 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\StaffRides.razor"
        
+    bool permitted = (Program.loggedInUser.Job == "Service" || Program.loggedInUser.Job == "Manager");
     List<StaffRideModel> rides;
     private DisplayStaffRideModel thisRide = new DisplayStaffRideModel();
+    private DisplayStaffRideModel rideSelected = new DisplayStaffRideModel();
+
+    private void RideSelected(bool flag, StaffRideModel rideSelected)
+    {
+        rideSelected.isSelected = flag;
+        NavManager.NavigateTo("/rideselected/" + rideSelected.RideId);
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -127,6 +135,7 @@ using Microsoft.Extensions.Configuration;
 #line default
 #line hidden
 #nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager NavManager { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IConfiguration _config { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IDataAccess _data { get; set; }
     }

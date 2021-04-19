@@ -7,68 +7,88 @@
 @inject IDataAccess _data
 @inject IConfiguration _config
 
-<h3>Customer List</h3>
-
-@if (customers == null)
+@if (permitted)
 {
-    <p><em>Loading customer list...</em></p>
+    <h3>Customer List</h3>
+
+    @if (customers == null)
+    {
+        <p><em>Loading customer list...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Payment</th>
+                    <th>Entered the Park</th>
+                    <td>Left the Park</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var customer in customers)
+                {
+                    <tr>
+                        <td>@customer.FirstName</td>
+                        <td>@customer.LastName</td>
+                        <td>@customer.Payment</td>
+                        <td>@customer.EnteredPark</td>
+                        <td>@customer.LeftPark</td>
+                        <td>
+                            <button type="submit" class="btn btn-primary" @onclick="@(() => UpdateCustomer(customer))">
+                                Left the park
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h4>Add a customer</h4>
+        <EditForm Model="@newCustomer" OnValidSubmit="@InsertCustomer">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="col-12 row">
+                <input class="form-control col-3" @bind="newCustomer.FirstName" placeholder="First Name" />
+                <input class="form-control col-3" @bind="newCustomer.LastName" placeholder="Last Name" />
+                <input class="form-control col-4" @bind="newCustomer.Payment" placeholder="Payment Type" />
+                <button type="submit" class="btn btn-primary">Add Customer</button>
+            </div>
+        </EditForm>
+    }
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Payment</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var customer in customers)
-            {
-                <tr>
-                    <td>@customer.FirstName</td>
-                    <td>@customer.LastName</td>
-                    <td>@customer.Payment</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <h4>Add a customer</h4>
-    <EditForm Model="@newCustomer" OnValidSubmit="@InsertCustomer">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-
-        <div class="col-12 row">
-            <input class="form-control col-3" @bind="newCustomer.FirstName" placeholder="First Name" />
-            <input class="form-control col-3" @bind="newCustomer.LastName" placeholder="Last Name" />
-            <input class="form-control col-4" @bind="newCustomer.Payment" placeholder="Payment Type" />
-            <button type="submit" class="btn btn-primary">Add Customer</button>
-        </div>
-    </EditForm>
+    <p><em>You are not authorized to view this page.</em></p>
 }
 
+
 @code {
+    bool permitted = (Program.loggedInUser.Job == "Service" || Program.loggedInUser.Job == "Manager");
     List<CustomerModel> customers;
     private DisplayCustomerModel newCustomer = new DisplayCustomerModel();
 
     private async Task InsertCustomer()
     {
-        string query = "INSERT INTO CUSTOMER (FirstName, LastName, Payment, PARK_ParkId) VALUES (@FirstName, @LastName, @Payment, 0);";
+        string query = "INSERT INTO CUSTOMER (FirstName, LastName, Payment, PARK_ParkId) VALUES (@FirstName, @LastName, @Payment, 1);";
 
         await _data.SaveData(query,
             new { FirstName = newCustomer.FirstName, LastName = newCustomer.LastName, Payment = newCustomer.Payment },
             _config.GetConnectionString("default"));
-        CustomerModel employee = new CustomerModel
-        {
-            FirstName = newCustomer.FirstName,
-            LastName = newCustomer.LastName,
-            Payment = newCustomer.Payment
-        };
-        customers.Add(employee);
-        // Reset so new employee variable has clean slate of information
-        newCustomer = new DisplayCustomerModel();
+        await OnInitializedAsync();
+    }
+
+    private async Task UpdateCustomer(CustomerModel customer)
+    {
+        string leftDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        string query = "UPDATE CUSTOMER SET LeftPark = @LeftPark WHERE customerId = @customerId";
+        await _data.SaveData(query,
+            new { LeftPark = leftDate, customerId = customer.CustomerId },
+            _config.GetConnectionString("default"));
+        await OnInitializedAsync();
     }
 
     protected override async Task OnInitializedAsync()

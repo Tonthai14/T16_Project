@@ -1,0 +1,63 @@
+﻿@page "/reportrepair"
+@using DataLibrary
+@using DataLibrary.Models
+@using Team16Project.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAccess _data
+@inject IConfiguration _config
+
+<h3>Report a ride for repair</h3>
+
+@if (rides == null)
+{
+    <p><em>Loading page...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ride ID</th>
+                <th>Ride Name</th>
+                <th>Needs Maintenance</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ride in rides)
+            {
+                <tr>
+                    <td>@ride.RideId</td>
+                    <td>@ride.RideName</td>
+                    <td>@ride.NeedsMaintenance</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" @onclick="@(() => ReportRide(ride))">
+                            Needs Repair
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    List<RideModel> rides;
+    private string repairType;
+
+    private async Task ReportRide(RideModel ride)
+    {
+        string query = "UPDATE RIDE SET NeedsMaintenance = 'Y' WHERE RideId = @RideId;";
+        await _data.SaveData(query, new { RideId = ride.RideId }, _config.GetConnectionString("default"));
+        string breakdown = "INSERT INTO BREAKDOWNS(BreakdownDate, RIDE_RideId) VALUES(@BreakdownDate, @RideId);";
+        DateTime breakdownDate = DateTime.Now;
+        await _data.SaveData(breakdown, new { BreakdownDate = breakdownDate, RideId = ride.RideId }, _config.GetConnectionString("default"));
+
+        await OnInitializedAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string query = "SELECT * FROM RIDE WHERE NeedsMaintenance = 'N'";
+        rides = await _data.LoadData<RideModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+    }
+}

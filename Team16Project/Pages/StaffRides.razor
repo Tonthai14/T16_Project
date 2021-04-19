@@ -6,44 +6,63 @@
 @using Microsoft.Extensions.Configuration
 @inject IDataAccess _data
 @inject IConfiguration _config
+@inject NavigationManager NavManager
 
-<h3>Rides Information</h3>
-
-@if (rides == null)
+@if (permitted)
 {
-    <p><em>Loading ride information</em></p>
+    <h3>Please select the ride you're working at</h3>
+
+    @if (rides == null)
+    {
+        <p><em>Loading ride information</em></p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Times Ridden</th>
+                    <th>Tickets To Ride</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ride in rides)
+                {
+                    @if (ride.NeedsMaintenance == "N")
+                    {
+                        <tr>
+                            <td>@ride.RideName</td>
+                            <td>@ride.TimesRidden</td>
+                            <td>@ride.TicketsToRide</td>
+                            <td>
+                                <button type="button" class="btn btn-primary" @onclick="(() => RideSelected(true, ride))">
+                                    Select
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Times Ridden</th>
-                <th>Tickets To Ride</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ride in rides)
-            {
-                <tr>
-                    <td>@ride.RideName</td>
-                    <td>@ride.TimesRidden</td>
-                    <td>@ride.TicketsToRide</td>
-                    <td>
-                        <button type="button" class="btn btn-primary">
-                            Add
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <p><em>You are not authorized to view this page.</em></p>
 }
 
 @code {
+    bool permitted = (Program.loggedInUser.Job == "Service" || Program.loggedInUser.Job == "Manager");
     List<StaffRideModel> rides;
     private DisplayStaffRideModel thisRide = new DisplayStaffRideModel();
+    private DisplayStaffRideModel rideSelected = new DisplayStaffRideModel();
+
+    private void RideSelected(bool flag, StaffRideModel rideSelected)
+    {
+        rideSelected.isSelected = flag;
+        NavManager.NavigateTo("/rideselected/" + rideSelected.RideId);
+    }
 
     protected override async Task OnInitializedAsync()
     {

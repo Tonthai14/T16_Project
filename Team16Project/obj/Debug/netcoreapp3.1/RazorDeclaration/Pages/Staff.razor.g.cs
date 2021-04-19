@@ -77,27 +77,34 @@ using Team16Project.Shared;
 #nullable disable
 #nullable restore
 #line 3 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
-using DataLibrary;
+using System.Text;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 4 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
-using DataLibrary.Models;
+using DataLibrary;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 5 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
-using Team16Project.Models;
+using DataLibrary.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 6 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
+using Team16Project.Models;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 7 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
 using Microsoft.Extensions.Configuration;
 
 #line default
@@ -112,10 +119,13 @@ using Microsoft.Extensions.Configuration;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 87 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
+#line 106 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\Staff.razor"
        
+    bool permitted = (Program.loggedInUser.Job == "Manager");
+
     List<StaffModel> staff;
     private DisplayStaffModel newStaff = new DisplayStaffModel();
+    public string DisplayPwd { get; set; }
 
     private void EnableEdit(bool flag, StaffModel staff)
     {
@@ -124,26 +134,22 @@ using Microsoft.Extensions.Configuration;
 
     private async Task InsertStaff()
     {
-        string query = "INSERT INTO STAFF (FirstName, LastName, Job, PARK_ParkId) VALUES (@FirstName, @LastName, @Job, 0);";
+        const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        StringBuilder stringBuilder = new StringBuilder();
+        Random random = new Random();
+        int length = random.Next(2, 5);
+        for(int i = 0; i < length; i++)
+        {
+            stringBuilder.Append(valid[random.Next(valid.Length)]);
+        }
+        string password = stringBuilder.ToString();
+        string query = "INSERT INTO STAFF (FirstName, LastName, Job, Password, PARK_ParkId) VALUES (@FirstName, @LastName, @Job, @Password, 1);";
 
         await _data.SaveData(query,
-            new { FirstName = newStaff.FirstName, LastName = newStaff.LastName, Job = newStaff.Job },
+            new { FirstName = newStaff.FirstName, LastName = newStaff.LastName, Job = newStaff.Job, Password = password },
             _config.GetConnectionString("default"));
-        // Get StaffId of most recent database entry in STAFF table
-        string getId = "SELECT StaffId FROM STAFF ORDER BY CreateDate DESC LIMIT 1;";
-        List<int> id = await _data.LoadData<int, dynamic>(getId,
-            new { FirstName = newStaff.FirstName, LastName = newStaff.LastName, Job = newStaff.Job },
-            _config.GetConnectionString("default"));
-        StaffModel employee = new StaffModel
-        {
-            FirstName = newStaff.FirstName,
-            LastName = newStaff.LastName,
-            Job = newStaff.Job,
-            StaffId = id.ElementAt(0) // List should only contain single employee ID
-        };
-        staff.Add(employee);
-        // Reset so new employee variable has clean slate of information
-        newStaff = new DisplayStaffModel();
+        DisplayPwd = $"{newStaff.FirstName}'s temporary password is {password}";
+        await OnInitializedAsync();
     }
 
     private async Task UpdateStaff(StaffModel staff)
@@ -158,10 +164,13 @@ using Microsoft.Extensions.Configuration;
         await OnInitializedAsync();
     }
 
-    private async Task DeleteStaff()
+    private async Task DeleteStaff(StaffModel staff)
     {
-        string query = "DELETE FROM STAFF WHERE StaffId = @StaffId";
-
+        string query = "UPDATE STAFF SET FirstName = @FirstName, LastName = @LastName, Job = @Job, IsDeleted = @IsDeleted WHERE StaffId = @StaffId;";
+        await _data.SaveData(query,
+            new { FirstName = staff.FirstName, LastName = staff.LastName, Job = staff.Job, IsDeleted = "Y", StaffId = staff.StaffId },
+            _config.GetConnectionString("default"));
+        await OnInitializedAsync();
     }
 
     protected override async Task OnInitializedAsync()

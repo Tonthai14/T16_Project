@@ -1,0 +1,101 @@
+﻿@page "/rideselected/{rideid:int}"
+
+@using DataLibrary
+@using DataLibrary.Models
+@using Team16Project.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAccess _data
+@inject IConfiguration _config
+
+@if (permitted)
+{
+    <div class="col-12 row">
+        <h3>@curDate</h3>
+    </div>
+
+    <div class="card">
+        <div class="card-header" style="font-weight:bold; color:black">Today's statistics</div>
+        <div class="card-body">
+            <div class="col-4 row">
+                <h8>Total tickets used today: @rideDate.ElementAt(0).TicketsUsed</h8>
+            </div>
+            <div class="col-4 row">
+                <h8>Total times ridden today: @rideDate.ElementAt(0).TimesRidden</h8>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h4 class="card-header" style="font-weight:bold; color:black">Enter tickets collected</h4>
+        <div class="card-body">
+            <EditForm Model="updatedRideDate" OnValidSubmit="UpdateRideDate">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="col-6 row">
+                    <input class="form-control col-2" @bind="addTickets" placeholder="Tickets collected" />
+                </div>
+                <div class="col-6 row">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+else
+{
+    <p><em>You are not authorized to view this page.</em></p>
+}
+
+
+@code {
+    bool permitted = (Program.loggedInUser.Job == "Service");
+    [Parameter]
+    public int RideId { get; set; }
+
+    List<RideDateModel> rideDate;
+    private RideDateModel updatedRideDate = new RideDateModel();
+    private int addTickets = 0;
+
+    private string curDate;
+    private int month, day, year;
+
+    private async Task UpdateRideDate()
+    {
+        string getInfo = "SELECT TicketsUsed, TimesRidden FROM RIDE_DATE WHERE RIDE_RideId = @RideId;";
+        List<int> info =
+            await _data.LoadData<int, dynamic>(getInfo, new { RideId = RideId }, _config.GetConnectionString("default"));
+        int updatedTickets = info.ElementAt(0) + addTickets;
+        int updatedRidden = info.ElementAt(1) + 1;
+        string query = "UPDATE RIDE_DATE SET TicketsUsed = @TicketsUsed, TimesRidden = @TimesRidden WHERE RIDE_RideId = @RideId";
+        await _data.SaveData(query,
+            new { TicketsUsed = updatedTickets, TimesRidden = updatedRidden, RideId = RideId }, _config.GetConnectionString("default"));
+        string update = "UPDATE RIDE SET TimesRidden = TimesRidden + 1 AND TicketsUsed = TicketsUsed + @TicketsUsed WHERE RideId = @RideId;";
+        await _data.SaveData(update, new { TicketsUsed = addTickets }, _config.GetConnectionString("default"));
+        await OnInitializedAsync();
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        curDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss").Trim();
+        curDate = curDate.Substring(0, curDate.IndexOf(" "));
+
+        // Loading date info for chosen ride
+        string query = "SELECT * FROM RIDE_DATE WHERE RIDE_RideId = @RideId AND Date = @Date;";
+
+        rideDate = await _data.LoadData<RideDateModel, dynamic>(
+            query,
+            new { RideId = RideId, Date = curDate },
+            _config.GetConnectionString("default"));
+        // If no date entry exists yet, add the date and reload with the new date row info
+        if (!rideDate.Any())
+        {
+            string addDate = "INSERT INTO RIDE_DATE(Date, RIDE_RideId) VALUES(@Date, @RideId);";
+            await _data.SaveData(addDate, new { Date = curDate, RideId = RideId }, _config.GetConnectionString("default"));
+            rideDate = await _data.LoadData<RideDateModel, dynamic>(
+                query,
+                new { RideId = RideId, Date = curDate },
+                _config.GetConnectionString("default"));
+        }
+    }
+}

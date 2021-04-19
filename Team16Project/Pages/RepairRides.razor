@@ -1,0 +1,66 @@
+﻿@page "/riderepairs"
+@using DataLibrary
+@using DataLibrary.Models
+@using Team16Project.Models
+@using Microsoft.Extensions.Configuration
+@inject IDataAccess _data
+@inject IConfiguration _config
+
+<h3>Ride List for Repairs</h3>
+
+@if (permitted)
+{
+    if(!rides.Any())
+    {
+        <p>No rides are in need of maintenance currently.</p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Ride ID</th>
+                    <th>Ride Name</th>
+                    <th>Needs Maintenance</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ride in rides)
+                {
+                    <tr>
+                        <td>@ride.RideId</td>
+                        <td>@ride.RideName</td>
+                        <td>@ride.NeedsMaintenance</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" @onclick="@(() => UpdateRide(ride))">
+                                Repair Completed
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+else
+{
+    <p><em>You are not authorized to view this page.</em></p>
+}
+
+@code {
+    bool permitted = (Program.loggedInUser.Job == "Manager" || Program.loggedInUser.Job == "Repair");
+    List<RideModel> rides;
+
+    private async Task UpdateRide(RideModel ride)
+    {
+        string query = "UPDATE RIDE SET NeedsMaintenance = 'N', TimesRidden = 0 WHERE RideId = @RideId";
+        await _data.SaveData(query, new { RideId = ride.RideId }, _config.GetConnectionString("default"));
+        await OnInitializedAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string query = "SELECT * FROM RIDE WHERE NeedsMaintenance = 'Y'";
+        rides = await _data.LoadData<RideModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+    }
+}

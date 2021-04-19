@@ -10,5 +10,8 @@ namespace DataLibrary.Models
         public string RideName { get; set; }
         public int TimesRidden { get; set; }
         public int TicketsToRide { get; set; }
+        public int TicketsUsed { get; set; }
+        public bool isSelected { get; set; }
+        public string NeedsMaintenance { get; set; }
     }
 }

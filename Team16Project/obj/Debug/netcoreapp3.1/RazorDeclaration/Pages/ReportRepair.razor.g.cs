@@ -4,7 +4,7 @@
 #pragma warning disable 0649
 #pragma warning disable 0169
 
-namespace Team16Project.Shared
+namespace Team16Project.Pages
 {
     #line hidden
     using System;
@@ -75,7 +75,36 @@ using Team16Project.Shared;
 #line default
 #line hidden
 #nullable disable
-    public partial class SurveyPrompt : Microsoft.AspNetCore.Components.ComponentBase
+#nullable restore
+#line 2 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\ReportRepair.razor"
+using DataLibrary;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 3 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\ReportRepair.razor"
+using DataLibrary.Models;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 4 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\ReportRepair.razor"
+using Team16Project.Models;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 5 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\ReportRepair.razor"
+using Microsoft.Extensions.Configuration;
+
+#line default
+#line hidden
+#nullable disable
+    [Microsoft.AspNetCore.Components.RouteAttribute("/reportrepair")]
+    public partial class ReportRepair : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
         protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
@@ -83,15 +112,33 @@ using Team16Project.Shared;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 12 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Shared\SurveyPrompt.razor"
+#line 43 "C:\Users\Tonth\source\repos\T16_Project\Team16Project\Pages\ReportRepair.razor"
        
-    // Demonstrates how a parent component can supply parameters
-    [Parameter]
-    public string Title { get; set; }
+    List<RideModel> rides;
+    private string repairType;
+
+    private async Task ReportRide(RideModel ride)
+    {
+        string query = "UPDATE RIDE SET NeedsMaintenance = 'Y' WHERE RideId = @RideId;";
+        await _data.SaveData(query, new { RideId = ride.RideId }, _config.GetConnectionString("default"));
+        string breakdown = "INSERT INTO BREAKDOWNS(BreakdownDate, RIDE_RideId) VALUES(@BreakdownDate, @RideId);";
+        DateTime breakdownDate = DateTime.Now;
+        await _data.SaveData(breakdown, new { BreakdownDate = breakdownDate, RideId = ride.RideId }, _config.GetConnectionString("default"));
+
+        await OnInitializedAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string query = "SELECT * FROM RIDE WHERE NeedsMaintenance = 'N'";
+        rides = await _data.LoadData<RideModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+    }
 
 #line default
 #line hidden
 #nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private IConfiguration _config { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private IDataAccess _data { get; set; }
     }
 }
 #pragma warning restore 1591

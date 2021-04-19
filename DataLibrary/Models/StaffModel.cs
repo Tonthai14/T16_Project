@@ -13,5 +13,6 @@ namespace DataLibrary.Models
         public string Job { get; set; }
         public string Password { get; set; }
         public bool IsBeingEdited { get; set; }
+        public string IsDeleted { get; set; }
     }
 }
