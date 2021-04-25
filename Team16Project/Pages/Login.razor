@@ -65,12 +65,12 @@
     private async Task<bool> OnValidSubmit()
     {
         isBusy = true;
-        string query = "SELECT * FROM STAFF WHERE StaffId = @Id AND Password = @Password";
+        string query = "SELECT * FROM STAFF WHERE StaffId = @Id AND Password = @Password AND JOB NOT IN (@Job)";
 
         try
         {
             employee = await _data.LoadData<StaffModel, dynamic>(query,
-                new { Id = int.Parse(loginModel.UserID), Password = loginModel.Password },
+                new { Id = int.Parse(loginModel.UserID), Password = loginModel.Password, Job = "Await" },
                 _config.GetConnectionString("default"));
             if (employee.Any())
             {

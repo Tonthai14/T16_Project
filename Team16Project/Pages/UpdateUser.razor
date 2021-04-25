@@ -30,6 +30,21 @@
                 <ValidationMessage For="@(() => updateUserModel.Password)" />
             </div>
             <div class="form-group">
+                <label>Update First Name</label>
+                <InputText @bind-Value="updateUserModel.FirstName" class="form-control" />
+                <ValidationMessage For="@(() => updateUserModel.FirstName)" />
+            </div>
+            <div class="form-group">
+                <label>Update Middle Name</label>
+                <InputText @bind-Value="updateUserModel.MiddleName" class="form-control" />
+                <ValidationMessage For="@(() => updateUserModel.MiddleName)" />
+            </div>
+            <div class="form-group">
+                <label>Update Last Name</label>
+                <InputText @bind-Value="updateUserModel.LastName" class="form-control" />
+                <ValidationMessage For="@(() => updateUserModel.LastName)" />
+            </div>
+            <div class="form-group">
                 <label>New Password</label>
                 <InputText @bind-Value="updateUserModel.NewPassword" type="password" class="form-control" />
                 <ValidationMessage For="@(() => updateUserModel.NewPassword)" />
@@ -75,11 +90,23 @@
                 _config.GetConnectionString("default"));
                 if (employee.Any())
                 {
-                    query = "UPDATE STAFF SET Password = @Password WHERE Staffid = @Id";
+                    if (updateUserModel.FirstName == null && updateUserModel.LastName == null)
+                    {
+                        query = "UPDATE STAFF SET Password = @Password WHERE Staffid = @Id";
 
-                    await _data.SaveData(query, new { Password = updateUserModel.NewPassword, Id = int.Parse(updateUserModel.UserID)}, _config.GetConnectionString("default"));
-                    Message = "Password Updated.";
+                        await _data.SaveData(query, new { Password = updateUserModel.NewPassword, Id = int.Parse(updateUserModel.UserID) }, _config.GetConnectionString("default"));
+                        Message = "User Updated.";
+                    }
+                    else
+                    {
+                        query = "UPDATE STAFF SET FirstName = @FirstName, MiddleName = @MiddleName, LastName = @LastName, Password = @Password WHERE Staffid = @Id";
 
+                        await _data.SaveData(query, new {
+                            FirstName = updateUserModel.FirstName, MiddleName = updateUserModel.MiddleName,
+                            LastName = updateUserModel.LastName, Password = updateUserModel.NewPassword, Id = int.Parse(updateUserModel.UserID) },
+                            _config.GetConnectionString("default"));
+                        Message = "User Updated.";
+                    }
                     isBusy = false;
                     nav.NavigateTo("/");
                 }

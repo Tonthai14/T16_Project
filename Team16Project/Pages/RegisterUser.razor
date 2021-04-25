@@ -60,6 +60,7 @@
 
 @code {
     private RegisterModel registerModel = new RegisterModel();
+    List<int> staffID;
 
     private bool isBusy;
 
@@ -80,8 +81,14 @@
                     LastName = registerModel.LastName, Job = "Await", Password = registerModel.Password, Park_ParkId = 1 },
                 _config.GetConnectionString("default"));
 
+                query = "SELECT LAST_INSERT_ID() FROM STAFF";
+                staffID = await _data.LoadData<int, dynamic>(query,
+                          new{ }, _config.GetConnectionString("default"));
+
                 isBusy = false;
-                Message = "Awaiting approval from Manager";
+                Message = "Awaiting approval from Manager. Your staff id is "+staffID[0];
+
+                await Task.Delay(3000);
                 nav.NavigateTo("/");
             }
             catch
