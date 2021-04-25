@@ -14,6 +14,15 @@ namespace Team16Project.Models
         [RegularExpression("([0-9]+)", ErrorMessage = "User ID must be a number.")]
         public string UserID { get; set; }
 
+        [RegularExpression("([a-zA-Z]+)", ErrorMessage = "First Name must only contain letters.")]
+        public string FirstName { get; set; }
+
+        [RegularExpression("([a-zA-Z]+)", ErrorMessage = "Middle Name must only contain letters.")]
+        public string MiddleName { get; set; }
+
+        [RegularExpression("([a-zA-Z]+)", ErrorMessage = "Last Name must only contain letters.")]
+        public string LastName { get; set; }
+
         [Required]
         [StringLength(20, ErrorMessage = "Password is too long.")]
         [MinLength(2, ErrorMessage = "Password is too short.")]
