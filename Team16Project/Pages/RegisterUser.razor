@@ -1,0 +1,101 @@
+﻿@page "/auth/registerUser"
+
+@layout LoginLayout
+@using DataLibrary
+@using DataLibrary.Models
+@using Team16Project.Data
+@using Team16Project.Models
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims;
+@inject IDataAccess _data
+@inject IConfiguration _config
+@inject NavigationManager nav
+
+
+<div class="card">
+    <h4 class="card-header" style="font-weight:bold; color:black">Enter your credentials</h4>
+    <div class="card-body">
+        <EditForm Model="@registerModel" OnValidSubmit="@OnValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="form-group">
+                <label>First Name</label>
+                <InputText @bind-Value="registerModel.FirstName" class="form-control" />
+                <ValidationMessage For="@(() => registerModel.FirstName)" />
+            </div>
+            <div class="form-group">
+                <label>Middle Name</label>
+                <InputText @bind-Value="registerModel.MiddleName" class="form-control" />
+                <ValidationMessage For="@(() => registerModel.MiddleName)" />
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <InputText @bind-Value="registerModel.LastName" class="form-control" />
+                <ValidationMessage For="@(() => registerModel.LastName)" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <InputText @bind-Value="registerModel.Password" type="password" class="form-control" />
+                <ValidationMessage For="@(() => registerModel.Password)" />
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <InputText @bind-Value="registerModel.ConfirmPassword" type="password" class="form-control" />
+                <ValidationMessage For="@(() => registerModel.ConfirmPassword)" />
+            </div>
+            <button disabled="@isBusy" class="btn btn-primary">
+                @if (isBusy)
+                {
+                    <span class="spinner-border spinner-border-sm mr-1" />
+                }
+                Register
+            </button>
+            <div class="col-12 row" style="text-align:left; font-weight:bold">
+                <span class="col-12">@Message</span>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private RegisterModel registerModel = new RegisterModel();
+
+    private bool isBusy;
+
+    public string Message { get; set; }
+
+    private async Task<bool> OnValidSubmit()
+    {
+        isBusy = true;
+
+
+        if (registerModel.Password.Equals(registerModel.ConfirmPassword))
+        {
+            string query = "INSERT INTO STAFF(FirstName, MiddleName, LastName, Job, Password, PARK_ParkId) VALUES (@FirstName, @MiddleName, @LastName, @Job, @Password, @PARK_ParkId)";
+            try
+            {
+                await _data.SaveData(query,
+                new { FirstName = registerModel.FirstName, MiddleName = registerModel.MiddleName,
+                    LastName = registerModel.LastName, Job = "Await", Password = registerModel.Password, Park_ParkId = 1 },
+                _config.GetConnectionString("default"));
+
+                isBusy = false;
+                Message = "Awaiting approval from Manager";
+                nav.NavigateTo("/");
+            }
+            catch
+            {
+                Message = "An error has occured.";
+                isBusy = false;
+            }
+        }
+        else
+        {
+            Message = "Passwords do not match.";
+            isBusy = false;
+        }
+
+        return await Task.FromResult(true);
+    }
+}

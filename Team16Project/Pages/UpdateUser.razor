@@ -1,0 +1,106 @@
+﻿@page "/auth/updateUser"
+
+@layout LoginLayout
+@using DataLibrary
+@using DataLibrary.Models
+@using Team16Project.Data
+@using Team16Project.Models
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims;
+@inject IDataAccess _data
+@inject IConfiguration _config
+@inject NavigationManager nav
+
+
+<div class="card">
+    <h4 class="card-header" style="font-weight:bold; color:black">Enter your credentials</h4>
+    <div class="card-body">
+        <EditForm Model="@updateUserModel" OnValidSubmit="@OnValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="form-group">
+                <label>Staff ID</label>
+                <InputText @bind-Value="updateUserModel.UserID" class="form-control" />
+                <ValidationMessage For="@(() => updateUserModel.UserID)" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <InputText @bind-Value="updateUserModel.Password" type="password" class="form-control" />
+                <ValidationMessage For="@(() => updateUserModel.Password)" />
+            </div>
+            <div class="form-group">
+                <label>New Password</label>
+                <InputText @bind-Value="updateUserModel.NewPassword" type="password" class="form-control" />
+                <ValidationMessage For="@(() => updateUserModel.NewPassword)" />
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <InputText @bind-Value="updateUserModel.ConfirmPassword" type="password" class="form-control" />
+                <ValidationMessage For="@(() => updateUserModel.ConfirmPassword)" />
+            </div>
+            <button disabled="@isBusy" class="btn btn-primary">
+                @if (isBusy)
+                {
+                    <span class="spinner-border spinner-border-sm mr-1" />
+                }
+                Update
+            </button>
+            <div class="col-12 row" style="text-align:left; font-weight:bold">
+                <span class="col-12">@Message</span>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private UpdateUserModel updateUserModel = new UpdateUserModel();
+
+    List<StaffModel> employee;
+    private bool isBusy;
+
+    public string Message { get; set; }
+
+    private async Task<bool> OnValidSubmit()
+    {
+        isBusy = true;
+
+        if (updateUserModel.NewPassword.Equals(updateUserModel.ConfirmPassword))
+        {
+            string query = "SELECT * FROM STAFF WHERE StaffId = @Id AND Password = @Password";
+            try
+            {
+                employee = await _data.LoadData<StaffModel, dynamic>(query,
+                new { Id = int.Parse(updateUserModel.UserID), Password = updateUserModel.Password },
+                _config.GetConnectionString("default"));
+                if (employee.Any())
+                {
+                    query = "UPDATE STAFF SET Password = @Password WHERE Staffid = @Id";
+
+                    await _data.SaveData(query, new { Password = updateUserModel.NewPassword, Id = int.Parse(updateUserModel.UserID)}, _config.GetConnectionString("default"));
+                    Message = "Password Updated.";
+
+                    isBusy = false;
+                    nav.NavigateTo("/");
+                }
+                else
+                {
+                    Message = "User not found. Try entering your credentials again.";
+                    isBusy = false;
+                }
+            }
+            catch
+            {
+                Message = "An error has occured.";
+                isBusy = false;
+            }
+        }
+        else
+        {
+            Message = "Passwords do not match.";
+            isBusy = false;
+        }
+
+        return await Task.FromResult(true);
+    }
+}

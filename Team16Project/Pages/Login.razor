@@ -1,4 +1,4 @@
-﻿@page "/auth/login"
+﻿@page "/"
 
 @layout LoginLayout
 @using DataLibrary
@@ -24,7 +24,7 @@
             <DataAnnotationsValidator />
 
             <div class="form-group">
-                <label>UserID</label>
+                <label>Staff ID</label>
                 <InputText @bind-Value="loginModel.UserID" class="form-control" />
                 <ValidationMessage For="@(() => loginModel.UserID)" />
             </div>
@@ -36,8 +36,7 @@
             <button disabled="@isBusy" class="btn btn-primary">
                 @if (isBusy)
                 {
-                    <span class="spinner-border spinner-border-sm mr-1" />
-                }
+<span class="spinner-border spinner-border-sm mr-1" />                }
                 Login
             </button>
             <div class="col-12 row" style="text-align:left; font-weight:bold">
@@ -45,10 +44,12 @@
             </div>
         </EditForm>
     </div>
+    <NavLink class="nav-link" href="auth/registerUser">
+        <span class="oi oi-list-rich" aria-hidden="true"></span> Register
+    </NavLink>
 </div>
 
 @code {
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
     private LoginModel loginModel = new LoginModel();
 
     List<StaffModel> employee;
@@ -64,22 +65,23 @@
     private async Task<bool> OnValidSubmit()
     {
         isBusy = true;
-        string query = "SELECT * FROM STAFF WHERE id = '" + int.Parse(loginModel.UserID) + "' AND password = '" + loginModel.Password + "'";
+        string query = "SELECT * FROM STAFF WHERE StaffId = @Id AND Password = @Password";
 
         try
         {
-            employee = await _data.LoadData<StaffModel, dynamic>(query, new { }, _config.GetConnectionString("default"));
+            employee = await _data.LoadData<StaffModel, dynamic>(query,
+                new { Id = int.Parse(loginModel.UserID), Password = loginModel.Password },
+                _config.GetConnectionString("default"));
             if (employee.Any())
             {
                 LoginMessage = "User found";
-
                 Program.loggedInUser = employee[0];
                 isBusy = false;
-                nav.NavigateTo("/");
+                nav.NavigateTo("/reports");
             }
             else
             {
-                LoginMessage = "User not found";
+                LoginMessage = "User not found. Try entering your credentials again.";
                 isBusy = false;
             }
         }
